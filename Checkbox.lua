@@ -35,6 +35,9 @@ local function uncheck(o)
     
 end
 
+function Checkbox.GetValue(obj)
+  return obj.checked
+end
 
 
 function Checkbox.draw(obj)

@@ -27,6 +27,11 @@ end
 end
 
 
+function Slider.GetValue(obj)
+  return obj.custom_labels[obj.value] or obj.value
+end
+
+
 function Slider.setPrecision(obj,precision)
     if precision <0 then
         precision =0
@@ -41,7 +46,10 @@ function Slider.draw(obj)
   if obj.visible then
         --draw the label (value)
         love.graphics.setColor(obj.color["font_color"])
-        love.graphics.print(obj.value,obj.txt_pos.x,obj.txt_pos.y)
+
+        love.graphics.print(obj.custom_labels[obj.value] or obj.value, obj.txt_pos.x,obj.txt_pos.y)
+
+      
         
         --start drawing the stuff in it ....
         --draw the "line" whcih the slider is moving on
@@ -101,4 +109,10 @@ function Slider.update(obj,clicked,x,y,focused)
   return focused, redraw
 end
 
+
+function Slider.setCustomLabels(obj, labels)
+  
+  obj.use_custom_labels = true
+  obj.custom_labels = labels
+end
 return Slider

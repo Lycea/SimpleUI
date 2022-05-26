@@ -55,9 +55,14 @@ function ui.draw()
 end
 
 
-function ui.AddGroup(tab_ids,name)
+function ui.AddGroup(tab_ids,name,visibility)
   groups[name] = {}
   groups[name].ids =tab_ids
+
+  if visibility == false then
+      ui.SetGroupVisible(name,false)
+  end
+
 end
 
 
@@ -69,6 +74,18 @@ function ui.SetGroupVisible(name,visible)
   
 end
 
+
+function ui.GetValue(element_id)
+  if components[element_id] ~= nil then
+    if components[element_id].GetValue ~= nil then
+      return components[element_id]:GetValue()
+    else
+      assert(false,"The element does not support GetValue()")
+    end
+  else
+    assert(false, "The element with the given id does not exist")
+  end
+end
 
 
 
