@@ -10,6 +10,13 @@ local function clamp(min, max, val)
     return math.max(min, math.min(val, max));
 end
   
+
+
+
+local function to_precision(value,precision)
+
+end
+
  
  function Slider:new (o)
       o = o or {}   -- create object if user does not provide one
@@ -22,7 +29,8 @@ end
       local per = percent_(o.min,o.max,o.value)
       print(per)
       o.sli_pos.x = math.ceil( lerp_(o.x +10,o.x+o.width-20,per))
-      
+      o.__prev_value = o.value
+      o.__onChange = function() end
       return o
 end
 
@@ -38,6 +46,11 @@ function Slider.setPrecision(obj,precision)
     end
     
     obj.precision = precision
+end
+
+
+function Slider.setCallback(obj, callback, fn)
+  obj["__"..callback] = fn
 end
 
 
@@ -96,15 +109,22 @@ function Slider.update(obj,clicked,x,y,focused)
       
       local per =      ((min) -obj.sli_pos.x)/((min) - (max))
       obj.value = lerp_(obj.min,obj.max,per)
+
+
    
    else
      if focused == obj.id then focused = 0 end
        obj.state = "default" 
-     end
+   end
    --print(components[name][i].value)
-        obj.value = math.floor(obj.value*math.pow(10,obj.precision))/math.pow(10,obj.precision)
+   obj.value = math.floor(obj.value*math.pow(10,obj.precision))/math.pow(10,obj.precision)
    --obj.value  = math.floor(obj.value )
    redraw = (old== obj.state) and redraw or true 
+
+   if obj.value ~= obj.__prev_value then
+     obj.__prev_value = obj.value
+     obj.__onChange( obj.custom_labels[obj.value] or obj.value)
+   end
 
   return focused, redraw
 end
@@ -115,4 +135,5 @@ function Slider.setCustomLabels(obj, labels)
   obj.use_custom_labels = true
   obj.custom_labels = labels
 end
+
 return Slider

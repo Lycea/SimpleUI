@@ -1,6 +1,10 @@
  local  Checkbox = {}
  
- 
+ function Checkbox.setCallback(obj, callback, fn)
+  obj["__"..callback] = fn
+end
+
+
  function Checkbox:new (o)
       o = o or {}   -- create object if user does not provide one
       o.name = "Checkbox"
@@ -78,7 +82,7 @@ function Checkbox.update(obj,clicked,x,y,focused)
         
         --check if long enough time has passed since last click 
         if obj.time >0.2 and clicked then 
-            t = clicked and obj.ClickEvent(obj.id,obj.name) or "nope"
+            t = clicked and obj.__onClick(obj.id,obj.name) or "nope"
             obj.checked = not obj.checked
             obj.time = 0
         end

@@ -9,6 +9,8 @@ local b   = require(BASE..'Button')
 local s   = require(BASE..'Slider')
 local cb  = require(BASE..'Checkbox')
 
+local spi = require(BASE..'Spinner')
+
 local ui = {}
 
 local components ={}
@@ -38,7 +40,9 @@ local lg = love.graphics
   
   
 
-  
+function init()
+  spi.set_btn(b)
+end
   
 function ui.draw()
   if redraw then
@@ -150,6 +154,56 @@ function ui.AddSlider(value,x,y,width,height,min,max)
     return id
 end
 
+function ui.AddSpinner(items,x,y,width,height,radius)
+  local id = g_id
+  local temp = {}
+  local w = settings.font:getWidth("test")
+  local p = settings.font:getHeight()
+  
+  --iterate list and get largest string ...
+  local w = 0
+  for _, txt in pairs(items) do
+    txt_size = settings.font:getWidth(txt)
+    if txt_size > w then w = txt_size end
+  end
+
+  temp.items = items or {}
+  temp.id  = id
+  temp.txt = label or ""
+
+  --position
+  temp.x   = x or 0
+  temp.y   = y or 0
+
+  width = w
+  height = p
+
+  temp.width = width or 50
+  temp.height = height or 30
+
+  temp.txt_pos = {}
+  
+  x = math.floor(x+( width - w)/2)
+  y = math.floor(y+( height -p)/2)
+  
+  temp.txt_pos.x = x + 10
+  temp.txt_pos.y = y 
+  
+  temp.state = "default"
+  temp.visible = true
+  
+  temp.color = settings.button
+  temp.ClickEvent = components.ClickEvent
+  
+  components[id] =spi:new(temp)
+  
+  redraw = true
+  
+  g_id =g_id +1
+  return id
+end
+
+
 
 function ui.AddButton(label,x,y,width,height,radius)
   local id = g_id
@@ -220,7 +274,9 @@ function ui.SetColor(component,color_type,color)
 end
 
 function ui.SetVisibiliti(id,visible)
-  components[id].visible = visible  
+  components[id].visible =    visible  
+  if components[id].SetVisibility then  components[id]:SetVisibility(visible) end
+
   redraw = true
 end
 
@@ -232,14 +288,24 @@ function ui.init()
     components.ClickEvent = function () end
 end
 
-function ui.SetSpecialCallback(id,fn)
-  components[id].ClickEvent = fn
+function ui.SetSpecialCallback(id,fn,event_to_set)
+  --components[id].ClickEvent = fn
+
+  ui.SetEventCallback(id, fn, event_to_set or "onClick")
 end
+
+function ui.SetEventCallback(id,fn,event_name)
+  components[id]:setCallback(event_name,fn)
+end
+
 
 
 
 function ui.GetObject(id)
     return components[id]
 end
+
+
+init()
 
 return ui
