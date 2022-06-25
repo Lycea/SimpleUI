@@ -44,6 +44,8 @@ function Checkbox.GetValue(obj)
 end
 
 
+
+
 function Checkbox.draw(obj)
   
   if obj.visible then
@@ -82,8 +84,9 @@ function Checkbox.update(obj,clicked,x,y,focused)
         
         --check if long enough time has passed since last click 
         if obj.time >0.2 and clicked then 
-            t = clicked and obj.__onClick(obj.id,obj.name) or "nope"
             obj.checked = not obj.checked
+            t = clicked and obj.__onClick(obj.id,obj.name) or "nope"
+            
             obj.time = 0
         end
       end
