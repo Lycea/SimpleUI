@@ -30,7 +30,7 @@ end
 
 
 function Label.update(obj,clicked,x,y,focused)
-   return 0, false
+   return focused, false
 end
 
 return Label
