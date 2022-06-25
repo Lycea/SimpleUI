@@ -5,15 +5,18 @@ print (i)
 BASE=BASE:sub(1,i-1)
 print(BASE)
 
+local lb  = require(BASE.."Label")
 local b   = require(BASE..'Button')
 local s   = require(BASE..'Slider')
 local cb  = require(BASE..'Checkbox')
 
 local spi = require(BASE..'Spinner')
 
+
 local ui = {}
 
 local components ={}
+local component_ids = {}
 
 local redraw = true
 local main_canvas 
@@ -29,16 +32,20 @@ local lg = love.graphics
   {
     --      border col             background       label/font                 hover   clicked
     button={
-            border_color={255,255,255,255},
-            default_color={0,0,0,0,255},
-            font_color={255,255,255,255},
-            hover_color={50,50,50,250},
-            clicked_color={0,50,0,255},
-            font = nil
+            border_color  ={255,255,255,255},
+            default_color ={0,0,0,0,255},
+            font_color    ={255,255,255,255},
+            hover_color   ={50,50,50,250},
+            clicked_color ={0,50,0,255},
+            font          = nil
             }
   }
   
-  
+local function add_component(comp,id)
+  components[id] = comp
+  table.insert(component_ids,id)
+end
+
 
 function init()
   spi.set_btn(b)
@@ -48,9 +55,11 @@ function ui.draw()
   if redraw then
     lg.setCanvas(main_canvas)
     lg.clear(0,0,0,0)
-    
-    for i = 1 , #components do
-      components[i]:draw()
+    --print(#components)
+    for _,i in pairs(component_ids)  do
+      if components[i] then
+        components[i]:draw()
+      end
     end
     
     lg.setCanvas()
@@ -97,16 +106,21 @@ local function check_components()
   local x,y = love.mouse.getX(),love.mouse.getY()
   local clicked = love.mouse.isDown(1)
   local draw 
-  for i =1 ,#components do
-   focused , draw = components[i]:update(clicked,x,y,focused)
-   if redraw == true then  else redraw = draw end
+
+  for _,i in pairs(component_ids) do
+    -- TODO do better iterating than all of the items 
+    if components[i] then
+      focused , draw = components[i]:update(clicked,x,y,focused)
+    
+      if redraw == true then  else redraw = draw end
+    end
   end
   
 end
 
 
 function ui.AddClickHandle(callback)
-  components.ClickEvent = callback
+  --components.ClickEvent = callback
 end
 
 function ui.update()
@@ -147,7 +161,10 @@ function ui.AddSlider(value,x,y,width,height,min,max)
     
     temp.color = settings.button
     temp.ClickEvent = components.ClickEvent
-    components[id] =s:new(temp)
+
+    add_component(s:new(temp), id)
+    --components[id] =
+    --table.insert( component_ids, id)
     
     redraw = true
     g_id=g_id +1
@@ -195,15 +212,88 @@ function ui.AddSpinner(items,x,y,width,height,radius)
   temp.color = settings.button
   temp.ClickEvent = components.ClickEvent
   
-  components[id] =spi:new(temp)
-  
+  --components[id] =spi:new(temp)
+  add_component(spi:new(temp), id)
   redraw = true
   
   g_id =g_id +1
   return id
 end
 
+function ui.AddNumericalSpinner(x,y,width,height,min,max)
+  local id = g_id
+  local temp = {}
+  local w = settings.font:getWidth("test")
+  local p = settings.font:getHeight()
+  
+  --iterate list and get largest string ...
+  local w = 0
 
+  w = settings.font:getWidth(tostring(max))
+
+
+  temp.items = items or {}
+  temp.id  = id
+  temp.txt = label or ""
+
+  --position
+  temp.x   = x or 0
+  temp.y   = y or 0
+
+  width = w
+  height = p
+
+  temp.width = width or 50
+  temp.height = height or 30
+
+  temp.txt_pos = {}
+  
+  x = math.floor(x+( width - w)/2)
+  y = math.floor(y+( height -p)/2)
+  
+  temp.txt_pos.x = x + 10
+  temp.txt_pos.y = y 
+  
+  temp.state = "default"
+  temp.visible = true
+  
+  temp.color = settings.button
+  temp.ClickEvent = components.ClickEvent
+  temp.numbers = true
+
+  temp.min = min
+  temp.max = max
+
+  --components[id] =spi:new(temp)
+  add_component(spi:new(temp), id)
+
+  redraw = true
+  
+  g_id =g_id +1
+  return id
+end
+
+function ui.AddLabel(label,x,y)
+  local id = g_id
+  local temp = {}
+  
+  temp.id  = id
+  temp.txt = label or ""
+  temp.x   = x or 0
+  temp.y   = y or 0
+  
+  temp.state = "default"
+  temp.visible = true
+  
+  temp.color = settings.button
+  
+  add_component(lb:new(temp), id)
+  redraw = true
+  
+  g_id =g_id +1
+  return id
+    
+end
 
 function ui.AddButton(label,x,y,width,height,radius)
   local id = g_id
@@ -234,7 +324,7 @@ function ui.AddButton(label,x,y,width,height,radius)
   temp.color = settings.button
   temp.ClickEvent = components.ClickEvent
   
-  components[id] =b:new(temp)
+  add_component(b:new(temp), id)
   
   redraw = true
   
@@ -258,7 +348,8 @@ function ui.AddCheckbox(label,x,y,value)
   temp.color = settings.button
   temp.ClickEvent = components.ClickEvent
   
-  components[id] =cb:new(temp)
+  --components[id] =cb:new(temp)
+  add_component(cb:new(temp), id)
   
   redraw = true
   
@@ -289,7 +380,7 @@ function ui.init()
 end
 
 function ui.SetSpecialCallback(id,fn,event_to_set)
-  --components[id].ClickEvent = fn
+  components[id].ClickEvent = fn
 
   ui.SetEventCallback(id, fn, event_to_set or "onClick")
 end
@@ -299,10 +390,32 @@ function ui.SetEventCallback(id,fn,event_name)
 end
 
 
+function ui.RemoveComponent(id)
+  if not pcall(components[id].destruct) then
+    print("no special destruct function for ",components[id].name,id)
+  end
+
+  for _,saved_id in pairs(component_ids) do
+    if saved_id == id then
+      component_ids[_] = nil
+      break
+    end
+  end
+
+  components[id] = nil
+end
+
+function ui.RemoveGroup(name)
+  groups[name] = nil
+end
 
 
 function ui.GetObject(id)
     return components[id]
+end
+
+function ui.ObjSetValue(id,variable,value)
+  components[id][variable] = value
 end
 
 

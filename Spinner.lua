@@ -22,11 +22,21 @@ end
 function Spinner.dec_index(o)
     o.idx =  o.idx == 1 and #o.items  or o.idx-1
 end
+
+function Spinner.inc(o)
+    o.idx = o.idx == o.max and o.max or o.idx+1
+end
+
+function Spinner.dec(o)
+    o.idx = o.idx == o.min and o.min or o.idx-1
+end
+
  
 function Spinner:new (o)
      o = o or {}   -- create object if user does not provide one
      o.name = "Spinner"
      o.idx  = 1
+     o.numbers = o.numbers or false
 
 
     btn_left_info  = {
@@ -44,7 +54,11 @@ function Spinner:new (o)
         color = o.color,
         __onClick = function () 
             print("left_clicked")
-            o:dec_index()
+            if o.numbers ==true then
+                o:dec()
+            else
+                o:dec_index()
+            end
           end
     }
 
@@ -63,7 +77,11 @@ function Spinner:new (o)
         color = o.color,
         __onClick = function () 
             print("right_clicked")
-            o:inc_index()
+            if o.numbers ==true then
+                o:inc()
+            else
+                o:inc_index()
+            end
           end
     }
 
@@ -85,7 +103,7 @@ function Spinner.draw(obj)
     obj.btn_right:draw()
 
     if obj.visible then
-        love.graphics.print(obj.items[obj.idx],obj.x + btn_width +padding, obj.y)
+        love.graphics.print( obj.numbers == true and obj.idx  or  obj.items[obj.idx],obj.x + btn_width +padding, obj.y)
     end
 
  --if obj.visible then
@@ -102,8 +120,9 @@ function Spinner.draw(obj)
 end
 
 
+
 function Spinner.GetValue(obj)
-    return obj.items[obj.idx]    
+    return  obj.numbers ==true and obj.idx or obj.items[obj.idx]    
 end
 
 function Spinner.SetVisibility(o, visibility)
