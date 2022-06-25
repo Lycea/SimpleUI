@@ -19,7 +19,7 @@ end
       o.box.h = 20
       
       o.txt_pos = o.box.x + 25
-      
+      if not o.__onClick then o.__onClick = function () end end
       setmetatable(o, self)
       self.__index = self
       
