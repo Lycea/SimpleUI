@@ -1,36 +1,45 @@
- local  Label = {}
- 
+print("\nlabel init")
+local BASE = (...)..'.' 
+print(BASE)
+local i= BASE:find("Label.$")
+print (i)
+BASE=BASE:sub(1,i-1)
+print(BASE)
+
+local  Label = require(BASE.."BaseWidget"):extend() 
  function Label:new (o)
       o = o or {}   -- create object if user does not provide one
-      o.name = "Label"
-      o.time = 5
+
+
+      for k,v in pairs(o) do
+        self[k] = v
+      end
+
+      self.name = "Label"
+      self.time = 5
       
-      o.txt_pos = o.x
+      self.txt_pos = self.x
       
-      setmetatable(o, self)
-      self.__index = self
+      --setmetatable(o, self)
+      --self.__index = self
       
-      return o
+      --return o
 end
 
 
 
-function Label.draw(obj)
+function Label:draw()
   
-  if obj.visible then
+  if self.visible then
 
     --draw the label
-    love.graphics.setColor(obj.color["font_color"])
-    love.graphics.print(obj.txt,obj.txt_pos,obj.y)
+    love.graphics.setColor(self.color["font_color"])
+    love.graphics.print(self.txt, self.txt_pos, self.y)
     
   end
 end
 
 
 
-
-function Label.update(obj,clicked,x,y,focused)
-   return focused, false
-end
 
 return Label

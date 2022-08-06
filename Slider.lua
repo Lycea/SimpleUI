@@ -1,4 +1,7 @@
- local Slider = {}
+ 
+ 
+ 
+ local Slider = require(b(...).."BaseWidget"):extend()
  
    local function lerp_(x,y,t) local num = x+t*(y-x)return num end
   
@@ -20,47 +23,54 @@ end
  
  function Slider:new (o)
       o = o or {}   -- create object if user does not provide one
-      o.name = "Slider"
-      o.precision = 1
+
+
+      for k,v in pairs(o) do
+        self[k]=v
+      end
+
+
+      self.name = "Slider"
+      self.precision = 1
       --Todo: please also set the right position here ...
-      setmetatable(o, self)
-      self.__index = self
+      --setmetatable(o, self)
+      --self.__index = self
       
-      local per = percent_(o.min,o.max,o.value)
+      local per = percent_(self.min,self.max,self.value)
       print(per)
-      o.sli_pos.x = math.ceil( lerp_(o.x +10,o.x+o.width-20,per))
-      o.__prev_value = o.value
-      o.__onChange = function() end
-      return o
+      self.sli_pos.x = math.ceil( lerp_(self.x +10,self.x+self.width-20,per))
+      self.__prev_value = self.value
+      self.__onChange = function() end
+      --return o
 end
 
 
-function Slider.GetValue(obj)
-  return obj.custom_labels[obj.value] or obj.value
+function Slider:GetValue()
+  return self.custom_labels[self.value] or self.value
 end
 
 
-function Slider.setPrecision(obj,precision)
+function Slider:setPrecision(precision)
     if precision <0 then
         precision =0
     end
     
-    obj.precision = precision
+    self.precision = precision
 end
 
 
-function Slider.setCallback(obj, callback, fn)
-  obj["__"..callback] = fn
+function Slider:setCallback( callback, fn)
+  self["__"..callback] = fn
 end
 
 
-function Slider.draw(obj)
+function Slider:draw()
 
-  if obj.visible then
+  if self.visible then
         --draw the label (value)
-        love.graphics.setColor(obj.color["font_color"])
+        love.graphics.setColor(self.color["font_color"])
 
-        love.graphics.print(obj.custom_labels[obj.value] or obj.value, obj.txt_pos.x,obj.txt_pos.y)
+        love.graphics.print(self.custom_labels[self.value] or self.value, self.txt_pos.x,self.txt_pos.y)
 
       
         
@@ -68,72 +78,76 @@ function Slider.draw(obj)
         --draw the "line" whcih the slider is moving on
         
         love.graphics.setColor(0,0,0,255)
-        love.graphics.rectangle("fill",obj.x+20,obj.y+ obj.height/2 -3,obj.width - 40,6)
-        love.graphics.setColor(obj.color["border_color"])
-        love.graphics.rectangle("line",obj.x+20,obj.y+ obj.height/2 -3,obj.width - 40,6)
+        love.graphics.rectangle("fill",self.x+20,self.y+ self.height/2 -3,self.width - 40,6)
+        love.graphics.setColor(self.color["border_color"])
+        love.graphics.rectangle("line",self.x+20,self.y+ self.height/2 -3,self.width - 40,6)
         
         --draw the "background"
-        love.graphics.setColor(obj.color[obj.state.."_color"])
-        love.graphics.rectangle("fill",obj.sli_pos.x,obj.sli_pos.y,obj.sli_pos.w,obj.sli_pos.h)
+        love.graphics.setColor(self.color[self.state.."_color"])
+        love.graphics.rectangle("fill",self.sli_pos.x,self.sli_pos.y,self.sli_pos.w,self.sli_pos.h)
         --draw the "border"
-        love.graphics.setColor(obj.color["border_color"])
-        love.graphics.rectangle("line",obj.sli_pos.x,obj.sli_pos.y,obj.sli_pos.w,obj.sli_pos.h)
+        love.graphics.setColor(self.color["border_color"])
+        love.graphics.rectangle("line",self.sli_pos.x,self.sli_pos.y,self.sli_pos.w,self.sli_pos.h)
       end
 end
 
 
 
 
-function Slider.update(obj,clicked,x,y,focused)
+--function Slider.update(obj,clicked,x,y,focused)
+function Slider:update(clicked,x,y,focused)
+  --print("id:", self.id)
+  print("name", self.name)
   local redraw = false
-  local old =obj.state 
+  local old = self.state 
   
-  local min = obj.x +10
-  local max = obj.x+obj.width-20
+  local min = self.x + 10
+  local max = self.x + self.width-20
    
-   if  (obj.sli_pos.x < x) and (obj.sli_pos.y< y) and (obj.sli_pos.x+obj.sli_pos.w > x) and obj.sli_pos.y+obj.sli_pos.h > y and obj.visible then
+  if self:check_rect(self.sli_pos,{x=x,y=y}) and self.visible then
+   --if  (obj.sli_pos.x < x) and (obj.sli_pos.y< y) and (obj.sli_pos.x+obj.sli_pos.w > x) and obj.sli_pos.y+obj.sli_pos.h > y and obj.visible then
     --it is in rectangle so hover or click!!!
       
-      if focused == 0 or focused == obj.id then
-        focused = obj.id
-        obj.state = clicked and"clicked" or "hover"
-        obj.sli_pos.x =  clamp(min,max,clicked and x-obj.sli_pos.w/2 or obj.sli_pos.x) 
+      if focused == 0 or focused == self.id then
+        focused = self.id
+        self.state = clicked and"clicked" or "hover"
+        self.sli_pos.x =  clamp(min,max,clicked and x-self.sli_pos.w/2 or self.sli_pos.x) 
         
-        local per =      ((min) -obj.sli_pos.x)/((min) - (max))
-        obj.value = lerp_(obj.min,obj.max,per)
+        local per =      ((min) -self.sli_pos.x)/((min) - (max))
+        self.value = lerp_(self.min,self.max,per)
       end
-   elseif  obj.state == "clicked"  and clicked then
+   elseif  self.state == "clicked"  and clicked then
     -- it was dragged !! sooooo change x
     
-      obj.sli_pos.x =  clamp(min,max,x-obj.sli_pos.w/2)
+      self.sli_pos.x =  clamp(min,max,x-self.sli_pos.w/2)
       
-      local per =      ((min) -obj.sli_pos.x)/((min) - (max))
-      obj.value = lerp_(obj.min,obj.max,per)
+      local per =      ((min) -self.sli_pos.x)/((min) - (max))
+      self.value = lerp_(self.min,self.max,per)
 
 
    
    else
-     if focused == obj.id then focused = 0 end
-       obj.state = "default" 
+     if focused == self.id then focused = 0 end
+       self.state = "default" 
    end
    --print(components[name][i].value)
-   obj.value = math.floor(obj.value*math.pow(10,obj.precision))/math.pow(10,obj.precision)
-   --obj.value  = math.floor(obj.value )
-   redraw = (old== obj.state) and redraw or true 
+   self.value = math.floor(self.value*math.pow(10,self.precision))/math.pow(10,self.precision)
+   --self.value  = math.floor(self.value )
+   redraw = (old== self.state) and redraw or true 
 
-   if obj.value ~= obj.__prev_value then
-     obj.__prev_value = obj.value
-     obj.__onChange( obj.custom_labels[obj.value] or obj.value)
+   if self.value ~= self.__prev_value then
+     self.__prev_value = self.value
+     self.__onChange( self.custom_labels[self.value] or self.value)
    end
 
   return focused, redraw
 end
 
 
-function Slider.setCustomLabels(obj, labels)
+function Slider.setCustomLabels(self, labels)
   
-  obj.use_custom_labels = true
-  obj.custom_labels = labels
+  self.use_custom_labels = true
+  self.custom_labels = labels
 end
 
 return Slider

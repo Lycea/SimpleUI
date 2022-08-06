@@ -1,9 +1,18 @@
-local BASE = (...)..'.' 
-print(BASE)
-local i= BASE:find("SimpleUI.$")
-print (i)
-BASE=BASE:sub(1,i-1)
-print(BASE)
+
+function b(txt)
+  return txt:gsub("[.][^.]*$","").."."
+end
+
+--local BASE = (...)..'.' 
+--print(BASE)
+--local i= BASE:find("SimpleUI.$")
+--print (i)
+--BASE=BASE:sub(1,i-1)
+--print(BASE)
+
+local BASE =b(...)
+
+local base_class = require(BASE.."classic.classic"):extend()
 
 local lb  = require(BASE.."Label")
 local b   = require(BASE..'Button')
@@ -12,8 +21,8 @@ local cb  = require(BASE..'Checkbox')
 
 local spi = require(BASE..'Spinner')
 
-
 local ui = {}
+
 
 local components ={}
 local component_ids = {}
@@ -32,11 +41,11 @@ local lg = love.graphics
   {
     --      border col             background       label/font                 hover   clicked
     button={
-            border_color  ={255,255,255,255},
+            border_color  ={1,1,1,255},
             default_color ={0,0,0,0,255},
-            font_color    ={255,255,255,255},
-            hover_color   ={50,50,50,250},
-            clicked_color ={0,50,0,255},
+            font_color    ={1,1,1,255},
+            hover_color   ={50/255,50/255,50/255,250/255},
+            clicked_color ={0,50/255,0,255},
             font          = nil
             }
   }
@@ -65,6 +74,8 @@ function ui.draw()
     lg.setCanvas()
   end
   lg.draw(main_canvas,0,0)
+
+  lg.print(focused,  150,0)
 end
 
 
@@ -162,7 +173,7 @@ function ui.AddSlider(value,x,y,width,height,min,max)
     temp.color = settings.button
     temp.ClickEvent = components.ClickEvent
 
-    add_component(s:new(temp), id)
+    add_component(s(temp), id)
     --components[id] =
     --table.insert( component_ids, id)
     
@@ -287,7 +298,7 @@ function ui.AddLabel(label,x,y)
   
   temp.color = settings.button
   
-  add_component(lb:new(temp), id)
+  add_component(lb(temp), id)
   redraw = true
   
   g_id =g_id +1
