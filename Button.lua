@@ -6,6 +6,8 @@
       o.name = "Button"
       o.time = 0.0
       o.timeout = 0.1
+      o.enabled = true
+      o.visible = true
       setmetatable(o, self)
       self.__index = self
       return o
@@ -42,7 +44,7 @@ function Button.update(obj,clicked,x,y,focused)
    
    local time = love.timer.getDelta()
 
-   if (obj.x < x) and (obj.y< y) and (obj.x+obj.width > x) and obj.y+obj.height > y and obj.visible then
+   if (obj.x < x) and (obj.y< y) and (obj.x+obj.width > x) and obj.y+obj.height > y and obj.enabled then
       --it is in rectangle so hover or click!!!
       if focused == 0 or focused == obj.id then
         focused = obj.id
