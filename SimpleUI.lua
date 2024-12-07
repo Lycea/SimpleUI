@@ -112,7 +112,8 @@ local function check_components()
   local draw 
 
   for _,i in pairs(component_ids) do
-    -- TODO do better iterating than all of the items 
+    -- TODO do better iterating than all of the items
+    --print("DEBUG: id checks ",i)
     if components[i] then
       focused , draw = components[i]:update(clicked,x,y,focused)
     
@@ -131,7 +132,8 @@ function ui.update()
   check_components()
 end
 
-
+------------------------------------------
+---  ADD COMPONENTS
 function ui.AddSlider(value,x,y,width,height,min,max)
     local id = g_id--#components.buttons +#components.slider  +1
     local temp = {}
@@ -362,7 +364,8 @@ function ui.AddCheckbox(label,x,y,value)
     
 end
 
-
+------------
+----- component settings
 function ui.SetColor(component,color_type,color)
   settings[component][color_type] = color
   redraw = true
@@ -382,22 +385,26 @@ function ui.SetEnabled(id, enabled)
   redraw = false
 end
 
+function ui.SetSpecialCallback(id, fn, event_to_set)
+  components[id].ClickEvent = fn
+
+  ui.SetEventCallback(id, fn, event_to_set or "onClick")
+end
+
+function ui.SetEventCallback(id, fn, event_name)
+  components[id]:setCallback(event_name, fn)
+end
+
+
 function ui.init()
  font = love.graphics.getFont()
     main_canvas = love.graphics.newCanvas(love.graphics.getWidth(),love.graphics.getHeight())
     components.ClickEvent = function () end
 end
 
-function ui.SetSpecialCallback(id,fn,event_to_set)
-  components[id].ClickEvent = fn
-
-  ui.SetEventCallback(id, fn, event_to_set or "onClick")
+function ui.UnsetFocus()
+  focused = 0
 end
-
-function ui.SetEventCallback(id,fn,event_name)
-  components[id]:setCallback(event_name,fn)
-end
-
 
 function ui.RemoveComponent(id)
   if not pcall(components[id].destruct) then
@@ -407,6 +414,11 @@ function ui.RemoveComponent(id)
   for _,saved_id in pairs(component_ids) do
     if saved_id == id then
       component_ids[_] = nil
+
+      if id == focused then
+        ui.UnsetFocus()
+      end
+
       break
     end
   end

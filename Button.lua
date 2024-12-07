@@ -39,6 +39,10 @@ end
 
 
 function Button.update(obj,clicked,x,y,focused)
+   -- print("   DB: state")
+   -- print("   enabled",obj.enabled)
+   -- print("   visible",obj.visible)
+
    local redraw = false
    local old =obj.state 
    
@@ -51,6 +55,7 @@ function Button.update(obj,clicked,x,y,focused)
         obj.time = obj.time +time
         
         obj.state = clicked  and"clicked" or "hover"
+        -- print("   state",obj.state)
         if obj.time >0.2 and clicked then 
           t = clicked and obj.__onClick(obj.id,obj.name) or "nope"
           obj.time = 0
