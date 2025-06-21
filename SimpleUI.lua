@@ -27,20 +27,24 @@ local g_id = 1
 
 local groups ={ }
 
+local font = nil
+
 local lg = love.graphics
-  local settings =
-  {
+
+local function settings()
+  return {
     --      border col             background       label/font                 hover   clicked
-    button={
-            border_color  ={255,255,255,255},
-            default_color ={0,0,0,0,255},
-            font_color    ={255,255,255,255},
-            hover_color   ={50,50,50,250},
-            clicked_color ={0,50,0,255},
-            font          = nil
-            }
+    button = {
+      border_color  = { 255, 255, 255, 255 },
+      default_color = { 0, 0, 0, 0, 255 },
+      font_color    = { 255, 255, 255, 255 },
+      hover_color   = { 50, 50, 50, 250 },
+      clicked_color = { 0, 50, 0, 255 },
+      font          = font
+    }
   }
-  
+end
+
 local function add_component(comp,id)
   components[id] = comp
   table.insert(component_ids,id)
@@ -48,7 +52,7 @@ end
 
 
 function init()
-  spi.set_btn(b)
+  --spi.set_btn(b)
 end
   
 function ui.draw()
@@ -108,7 +112,8 @@ local function check_components()
   local draw 
 
   for _,i in pairs(component_ids) do
-    -- TODO do better iterating than all of the items 
+    -- TODO do better iterating than all of the items
+    --print("DEBUG: id checks ",i)
     if components[i] then
       focused , draw = components[i]:update(clicked,x,y,focused)
     
@@ -127,7 +132,8 @@ function ui.update()
   check_components()
 end
 
-
+------------------------------------------
+---  ADD COMPONENTS
 function ui.AddSlider(value,x,y,width,height,min,max)
     local id = g_id--#components.buttons +#components.slider  +1
     local temp = {}
@@ -159,7 +165,7 @@ function ui.AddSlider(value,x,y,width,height,min,max)
     temp.min    = min   or 0
     temp.max    = max   or 100
     
-    temp.color = settings.button
+    temp.color = settings().button
     temp.ClickEvent = components.ClickEvent
 
     add_component(s:new(temp), id)
@@ -174,13 +180,13 @@ end
 function ui.AddSpinner(items,x,y,width,height,radius)
   local id = g_id
   local temp = {}
-  local w = settings.font:getWidth("test")
-  local p = settings.font:getHeight()
+  local w = settings().button.font:getWidth("test")
+  local p = settings().button.font:getHeight()
   
   --iterate list and get largest string ...
   local w = 0
   for _, txt in pairs(items) do
-    txt_size = settings.font:getWidth(txt)
+    txt_size = settings().button.font:getWidth(txt)
     if txt_size > w then w = txt_size end
   end
 
@@ -209,7 +215,7 @@ function ui.AddSpinner(items,x,y,width,height,radius)
   temp.state = "default"
   temp.visible = true
   
-  temp.color = settings.button
+  temp.color = settings().button
   temp.ClickEvent = components.ClickEvent
   
   --components[id] =spi:new(temp)
@@ -223,13 +229,13 @@ end
 function ui.AddNumericalSpinner(x,y,width,height,min,max)
   local id = g_id
   local temp = {}
-  local w = settings.font:getWidth("test")
-  local p = settings.font:getHeight()
+  local w = settings().button.font:getWidth("test")
+  local p = settings().button.font:getHeight()
   
   --iterate list and get largest string ...
   local w = 0
 
-  w = settings.font:getWidth(tostring(max))
+  w = settings().button.font:getWidth(tostring(max))
 
 
   temp.items = items or {}
@@ -257,7 +263,7 @@ function ui.AddNumericalSpinner(x,y,width,height,min,max)
   temp.state = "default"
   temp.visible = true
   
-  temp.color = settings.button
+  temp.color      = settings().button
   temp.ClickEvent = components.ClickEvent
   temp.numbers = true
 
@@ -285,7 +291,7 @@ function ui.AddLabel(label,x,y)
   temp.state = "default"
   temp.visible = true
   
-  temp.color = settings.button
+  temp.color   = settings().button
   
   add_component(lb:new(temp), id)
   redraw = true
@@ -298,8 +304,8 @@ end
 function ui.AddButton(label,x,y,width,height,radius)
   local id = g_id
   local temp = {}
-  local w = settings.font:getWidth(label)
-  local p = settings.font:getHeight()
+  local w         = settings().button.font:getWidth(label)
+  local p = settings().button.font:getHeight()
   
   temp.id  = id
   temp.txt = label or ""
@@ -321,7 +327,7 @@ function ui.AddButton(label,x,y,width,height,radius)
   temp.state = "default"
   temp.visible = true
   
-  temp.color = settings.button
+  temp.color      = settings().button
   temp.ClickEvent = components.ClickEvent
   
   add_component(b:new(temp), id)
@@ -345,7 +351,7 @@ function ui.AddCheckbox(label,x,y,value)
   temp.visible = true
   temp.checked = value or false
   
-  temp.color = settings.button
+  temp.color      = settings().button
   temp.ClickEvent = components.ClickEvent
   
   --components[id] =cb:new(temp)
@@ -358,7 +364,8 @@ function ui.AddCheckbox(label,x,y,value)
     
 end
 
-
+------------
+----- component settings
 function ui.SetColor(component,color_type,color)
   settings[component][color_type] = color
   redraw = true
@@ -371,24 +378,33 @@ function ui.SetVisibiliti(id,visible)
   redraw = true
 end
 
+function ui.SetEnabled(id, enabled)
+  components[id].enabled = enabled
+  if components[id].SetEnabled then components[id]:SetEnabled(enabled) end
 
-
-function ui.init()
-    settings.font = love.graphics.getFont()
-    main_canvas = love.graphics.newCanvas(love.graphics.getWidth(),love.graphics.getHeight())
-    components.ClickEvent = function () end
+  redraw = false
 end
 
-function ui.SetSpecialCallback(id,fn,event_to_set)
+function ui.SetSpecialCallback(id, fn, event_to_set)
   components[id].ClickEvent = fn
 
   ui.SetEventCallback(id, fn, event_to_set or "onClick")
 end
 
-function ui.SetEventCallback(id,fn,event_name)
-  components[id]:setCallback(event_name,fn)
+function ui.SetEventCallback(id, fn, event_name)
+  components[id]:setCallback(event_name, fn)
 end
 
+
+function ui.init()
+ font = love.graphics.getFont()
+    main_canvas = love.graphics.newCanvas(love.graphics.getWidth(),love.graphics.getHeight())
+    components.ClickEvent = function () end
+end
+
+function ui.UnsetFocus()
+  focused = 0
+end
 
 function ui.RemoveComponent(id)
   if not pcall(components[id].destruct) then
@@ -398,6 +414,11 @@ function ui.RemoveComponent(id)
   for _,saved_id in pairs(component_ids) do
     if saved_id == id then
       component_ids[_] = nil
+
+      if id == focused then
+        ui.UnsetFocus()
+      end
+
       break
     end
   end
