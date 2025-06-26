@@ -139,7 +139,7 @@ function ui.AddSlider(value,x,y,width,height,min,max)
     local temp = {}
     
     temp.id  = id
-    temp.txt = label or ""
+    temp.txt =  ""
     temp.x   = x or 0
     temp.y   = y or 0
     temp.width = width or 50
@@ -388,10 +388,10 @@ end
 function ui.SetSpecialCallback(id, fn, event_to_set)
   components[id].ClickEvent = fn
 
-  ui.SetEventCallback(id, fn, event_to_set or "onClick")
+  ui.__SetEventCallback(id, fn, event_to_set or "onClick")
 end
 
-function ui.SetEventCallback(id, fn, event_name)
+function ui.__SetEventCallback(id, fn, event_name)
   components[id]:setCallback(event_name, fn)
 end
 
@@ -399,6 +399,7 @@ end
 function ui.init()
  font = love.graphics.getFont()
     main_canvas = love.graphics.newCanvas(love.graphics.getWidth(),love.graphics.getHeight())
+    spi.set_btn(b)
     components.ClickEvent = function () end
 end
 

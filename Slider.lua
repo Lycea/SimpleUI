@@ -9,9 +9,6 @@
 local function clamp(min, max, val)
     return math.max(min, math.min(val, max));
 end
-  
-
-
 
 local function to_precision(value,precision)
 
@@ -22,18 +19,31 @@ end
       o = o or {}   -- create object if user does not provide one
       o.name = "Slider"
       o.precision = 1
+
+      o.value = clamp(o.min, o.max, o.value)
       --Todo: please also set the right position here ...
+      local per = percent_(o.min, o.max, o.value)
+      print(per)
+      o.sli_pos.x = math.ceil(lerp_(o.x + 10, o.x + o.width - 20, per))
+      o.__prev_value = o.value
+      o.__onChange = function() end
+
+      if o.custom_labels == nil then
+        o.custom_labels = {}
+      end
+
       setmetatable(o, self)
       self.__index = self
       
-      local per = percent_(o.min,o.max,o.value)
-      print(per)
-      o.sli_pos.x = math.ceil( lerp_(o.x +10,o.x+o.width-20,per))
-      o.__prev_value = o.value
-      o.__onChange = function() end
       return o
 end
 
+
+function Slider.recalc_position(o)
+  local per = percent_(o.min, o.max, o.value)
+  print(per)
+  o.sli_pos.x = math.ceil(lerp_(o.x + 10, o.x + o.width - 20, per))
+end
 
 function Slider.GetValue(obj)
   return obj.custom_labels[obj.value] or obj.value
@@ -131,9 +141,15 @@ end
 
 
 function Slider.setCustomLabels(obj, labels)
-  
+  print("setting custom labels")
   obj.use_custom_labels = true
   obj.custom_labels = labels
+  obj.precision= 0
+  obj.min = 1
+  obj.max = #labels
+
+  obj:recalc_position()
+
 end
 
 return Slider

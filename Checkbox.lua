@@ -85,7 +85,7 @@ function Checkbox.update(obj,clicked,x,y,focused)
         --check if long enough time has passed since last click 
         if obj.time >0.2 and clicked then 
             obj.checked = not obj.checked
-            t = clicked and obj.__onClick(obj.id,obj.name) or "nope"
+            t = clicked and obj.__onClick(obj.id,obj.name, obj.checked) or "nope"
             
             obj.time = 0
         end
