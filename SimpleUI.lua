@@ -75,6 +75,7 @@ end
 function ui.AddGroup(tab_ids,name,visibility)
   groups[name] = {}
   groups[name].ids =tab_ids
+  groups[name].__visible = visibility
 
   if visibility == false then
       ui.SetGroupVisible(name,false)
@@ -85,12 +86,16 @@ end
 
 function ui.SetGroupVisible(name,visible)
   --iterate over ids
+  groups[name].__visible = visible
   for k,v in pairs(groups[name].ids) do
     ui.SetVisibiliti(v,visible)
   end
   
 end
 
+function ui.toggle_group_visibility(name)
+  ui.SetGroupVisible(name, not groups[name].__visible)
+end
 
 function ui.GetValue(element_id)
   if components[element_id] ~= nil then

@@ -70,6 +70,28 @@ function spinner_examples()
         30, 30, 0, 100)
 end
 
+function component_group_example()
+
+  function toggle_callback()
+    print("cb trigger")
+    ui.toggle_group_visibility("toggle_example")
+  end
+
+  toggle_x = 300
+
+  toggle_checkbox = ui.AddCheckbox("group toggle", toggle_x, 20,true)
+  ui.SetSpecialCallback(toggle_checkbox,toggle_callback,"onClick")
+
+  toggle_group = {
+     ui.AddButton("toggle_button_1", toggle_x, 50, 50, 20),
+     ui.AddButton("toggle_button_2", toggle_x + 150, 50, 50, 20),
+     ui.AddButton("toggle_button_3", toggle_x, 80, 50, 20),
+     ui.AddButton("toggle_button_4", toggle_x + 150, 80, 50, 20),
+  }
+
+  ui.AddGroup(toggle_group,"toggle_example",true)
+end
+
 
 function love.load()
   ui.init()
@@ -79,6 +101,7 @@ function love.load()
   slider_examples()
   spinner_examples()
 
+  component_group_example()
 end
 
 function love.update(dt)
