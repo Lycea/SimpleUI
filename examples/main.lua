@@ -70,6 +70,11 @@ function spinner_examples()
         30, 30, 0, 100)
 end
 
+
+function toggle_example()
+  ui.AddToggleButton("toggle", 300, 120, 50,50)
+end
+
 function component_group_example()
 
   function toggle_callback()
@@ -100,6 +105,7 @@ function love.load()
   checkbox_examples()
   slider_examples()
   spinner_examples()
+  toggle_example()
 
   component_group_example()
 end

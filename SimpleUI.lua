@@ -9,6 +9,7 @@ local lb  = require(BASE.."Label")
 local b   = require(BASE..'Button')
 local s   = require(BASE..'Slider')
 local cb  = require(BASE..'Checkbox')
+local tb  = require(BASE.."ToggleButton")
 
 local spi = require(BASE..'Spinner')
 
@@ -31,8 +32,11 @@ local font = nil
 
 local lg = love.graphics
 
+local use_pre_11_colors = false
+
 local function settings()
-  return {
+
+  pre_11_colors = {
     --      border col             background       label/font                 hover   clicked
     button = {
       border_color  = { 255, 255, 255, 255 },
@@ -40,9 +44,26 @@ local function settings()
       font_color    = { 255, 255, 255, 255 },
       hover_color   = { 50, 50, 50, 250 },
       clicked_color = { 0, 50, 0, 255 },
+      toggled_color = { 50, 50, 0 ,255 },
       font          = font
     }
   }
+
+  post_11_colors = {
+    --      border col             background       label/font                 hover   clicked
+    button = {
+      border_color  = { 255 / 255, 255 / 255, 255 / 255, 255 / 255 },
+      default_color = { 0, 0, 0, 0, 255 / 255 },
+      font_color    = { 255 / 255, 255 / 255, 255 / 255, 255 / 255 },
+      hover_color   = { 50 / 255, 50 / 255, 50 / 255, 250 / 255 },
+      clicked_color = { 0, 50 / 255, 0, 255 / 255 },
+      toggled_color = { 50 /255 , 50/255 , 0, 250/255},
+      font          = font
+    }
+  }
+
+  return use_pre_11_colors and pre_11_colors or post_11_colors
+
 end
 
 local function add_component(comp,id)
@@ -343,6 +364,35 @@ function ui.AddButton(label,x,y,width,height,radius)
   return id
 end
 
+function ui.AddToggleButton(label, x, y,w,h, value)
+  local id        = g_id
+  local temp      = {}
+
+  temp.id         = id
+  temp.txt        = label or ""
+
+  temp.x          = x or 0
+  temp.y          = y or 0
+  temp.w          = w or 0
+  temp.h          = h or 0
+
+  temp.state      = "default"
+  temp.visible    = true
+  temp.checked    = value or false
+
+  temp.color      = settings().button
+  temp.ClickEvent = components.ClickEvent
+
+  --components[id] =cb:new(temp)
+  add_component(tb:new(temp), id)
+
+  redraw = true
+
+  g_id = g_id + 1
+  return id
+end
+
+
 function ui.AddCheckbox(label,x,y,value)
   local id = g_id
   local temp = {}
@@ -445,6 +495,10 @@ function ui.ObjSetValue(id,variable,value)
   components[id][variable] = value
 end
 
+
+function ui.set_pre_11_colors()
+  use_pre_11_colors = true
+end
 
 init()
 
