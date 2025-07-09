@@ -27,12 +27,17 @@ local focused = 0
 local g_id = 1
 
 local groups ={ }
+local toggle_groups = {}
 
 local font = nil
 
 local lg = love.graphics
 
 local use_pre_11_colors = false
+
+cb.ui = ui
+tb.ui = ui
+
 
 local function settings()
 
@@ -93,6 +98,8 @@ function ui.draw()
 end
 
 
+-----------------------
+-- component groups
 function ui.AddGroup(tab_ids,name,visibility)
   groups[name] = {}
   groups[name].ids =tab_ids
@@ -118,12 +125,52 @@ function ui.toggle_group_visibility(name)
   ui.SetGroupVisible(name, not groups[name].__visible)
 end
 
+
+----------------------
+-- toggle group / option groups
+
+
+local function set_toggle_group(id, group)
+  components[id].toggle_group = group
+end
+
+
+function ui.update_toggles(enabled_id,group)
+  for _,id in pairs(toggle_groups[group].ids) do
+    if id ~= enabled_id then
+--      print(id,enabled_id)
+    
+      --components[id].checked = false
+      components[id]:toggle(false)
+      redraw = true
+    end
+  end
+end
+
+function ui.AddOptionGroup(tab_ids,name,allow_non_selected)
+  toggle_groups[name] = {}
+  toggle_groups[name].ids = tab_ids
+  toggle_groups[name].allow_non_selected = allow_non_selected or true
+
+  for _,id in pairs(tab_ids) do
+    set_toggle_group(id, name)
+  end
+  
+end
+
+function ui.AddToOptionGroup(id,name)
+  table.insert(toggle_groups[name].ids, id )
+end
+
+
+-------------------------
+
 function ui.GetValue(element_id)
   if components[element_id] ~= nil then
     if components[element_id].GetValue ~= nil then
       return components[element_id]:GetValue()
     else
-      assert(false,"The element does not support GetValue()")
+      assert(false, "The element does not support GetValue()")
     end
   else
     assert(false, "The element with the given id does not exist")

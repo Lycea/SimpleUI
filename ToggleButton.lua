@@ -17,7 +17,9 @@ end
       o.box.y = o.y 
       o.box.w = o.w
       o.box.h = o.h
-      
+
+      o.toggle_group = "-"
+
       o.txt_pos = o.box.x + 25
       if not o.__onClick then o.__onClick = function () end end
       setmetatable(o, self)
@@ -75,7 +77,15 @@ function ToggleButton.draw(obj)
 end
 
 
+function ToggleButton.toggle(obj,state)
 
+  if state == nil then
+    state = not obj.checked
+  end
+
+  obj.checked = state
+  t = clicked and obj.__onClick(obj.id, obj.name, obj.checked) or "nope"
+end
 
 function ToggleButton.update(obj,clicked,x,y,focused)
    local redraw = false
@@ -96,7 +106,12 @@ function ToggleButton.update(obj,clicked,x,y,focused)
         if obj.time >0.2 and clicked then 
             obj.checked = not obj.checked
             t = clicked and obj.__onClick(obj.id,obj.name, obj.checked) or "nope"
-            
+
+            --check if it creates a bigger issue if not checked if active
+            if obj.toggle_group ~= "-" then
+              ToggleButton.ui.update_toggles(obj.id,obj.toggle_group)
+            end
+
             obj.time = 0
         end
       end

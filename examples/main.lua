@@ -72,11 +72,24 @@ end
 
 
 function toggle_example()
-  ui.AddToggleButton("toggle", 300, 120, 50,50)
+
+  ui.AddOptionGroup({
+      ui.AddToggleButton("toggle", 300, 120, 50,50),
+      ui.AddToggleButton("toggle", 370, 120, 50, 50),
+      ui.AddToggleButton("toggle", 300, 175, 50, 50),
+      ui.AddToggleButton("toggle", 370, 175, 50, 50)
+  },"sample_tab_group")
+
+  ui.AddOptionGroup({
+    ui.AddCheckbox("c1", 440, 120, 50),
+    ui.AddCheckbox("c2", 480, 120, 50),
+    ui.AddCheckbox("c3", 440, 175, 50),
+    ui.AddCheckbox("c4", 480, 175, 50),
+  },"checkbox_toggles")
+
 end
 
 function component_group_example()
-
   function toggle_callback()
     print("cb trigger")
     ui.toggle_group_visibility("toggle_example")

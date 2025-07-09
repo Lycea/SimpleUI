@@ -17,7 +17,9 @@ end
       o.box.y = o.y -2
       o.box.w = 20
       o.box.h = 20
-      
+
+      o.toggle_group="-"
+
       o.txt_pos = o.box.x + 25
       if not o.__onClick then o.__onClick = function () end end
       setmetatable(o, self)
@@ -44,7 +46,14 @@ function Checkbox.GetValue(obj)
 end
 
 
+function Checkbox.toggle(obj,state)
+  if state == nil then
+    state = not obj.checked
+  end
 
+  obj.checked = state
+  t = clicked and obj.__onClick(obj.id, obj.name, obj.checked) or "nope"
+end
 
 function Checkbox.draw(obj)
   
@@ -86,7 +95,12 @@ function Checkbox.update(obj,clicked,x,y,focused)
         if obj.time >0.2 and clicked then 
             obj.checked = not obj.checked
             t = clicked and obj.__onClick(obj.id,obj.name, obj.checked) or "nope"
-            
+
+            --check if it creates a bigger issue if not checked if active
+            if obj.toggle_group ~= "-" then
+              Checkbox.ui.update_toggles(obj.id,obj.toggle_group)
+            end
+
             obj.time = 0
         end
       end
