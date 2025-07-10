@@ -8,6 +8,8 @@
       o.timeout = 0.1
       o.enabled = true
       o.visible = true
+      o.__onClick = function () end
+
       setmetatable(o, self)
       self.__index = self
       return o
