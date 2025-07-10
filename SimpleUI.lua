@@ -5,13 +5,17 @@ print (i)
 BASE=BASE:sub(1,i-1)
 print(BASE)
 
-local lb  = require(BASE.."Label")
-local b   = require(BASE..'Button')
-local s   = require(BASE..'Slider')
-local cb  = require(BASE..'Checkbox')
-local tb  = require(BASE.."ToggleButton")
+-- local lb  = require(BASE.."Label")
+-- local b   = require(BASE..'Button')
+-- local s   = require(BASE..'Slider')
+-- local cb  = require(BASE..'Checkbox')
+-- local tb  = require(BASE.."ToggleButton")
 
-local spi = require(BASE..'Spinner')
+-- local spi = require(BASE..'Spinner')
+
+
+local controls = require(BASE.."components.components")
+
 
 
 local ui = {}
@@ -35,8 +39,8 @@ local lg = love.graphics
 
 local use_pre_11_colors = false
 
-cb.ui = ui
-tb.ui = ui
+controls.cb.ui = ui
+controls.tb.ui = ui
 
 
 local function settings()
@@ -241,7 +245,7 @@ function ui.AddSlider(value,x,y,width,height,min,max)
     temp.color = settings().button
     temp.ClickEvent = components.ClickEvent
 
-    add_component(s:new(temp), id)
+    add_component(controls.s:new(temp), id)
     --components[id] =
     --table.insert( component_ids, id)
     
@@ -292,7 +296,7 @@ function ui.AddSpinner(items,x,y,width,height,radius)
   temp.ClickEvent = components.ClickEvent
   
   --components[id] =spi:new(temp)
-  add_component(spi:new(temp), id)
+  add_component(controls.spi:new(temp), id)
   redraw = true
   
   g_id =g_id +1
@@ -344,7 +348,7 @@ function ui.AddNumericalSpinner(x,y,width,height,min,max)
   temp.max = max
 
   --components[id] =spi:new(temp)
-  add_component(spi:new(temp), id)
+  add_component(controls.spi:new(temp), id)
 
   redraw = true
   
@@ -366,7 +370,7 @@ function ui.AddLabel(label,x,y)
   
   temp.color   = settings().button
   
-  add_component(lb:new(temp), id)
+  add_component(controls.lb:new(temp), id)
   redraw = true
   
   g_id =g_id +1
@@ -403,7 +407,7 @@ function ui.AddButton(label,x,y,width,height,radius)
   temp.color      = settings().button
   temp.ClickEvent = components.ClickEvent
   
-  add_component(b:new(temp), id)
+  add_component(controls.b:new(temp), id)
   
   redraw = true
   
@@ -431,7 +435,7 @@ function ui.AddToggleButton(label, x, y,w,h, value)
   temp.ClickEvent = components.ClickEvent
 
   --components[id] =cb:new(temp)
-  add_component(tb:new(temp), id)
+  add_component(controls.tb:new(temp), id)
 
   redraw = true
 
@@ -457,7 +461,7 @@ function ui.AddCheckbox(label,x,y,value)
   temp.ClickEvent = components.ClickEvent
   
   --components[id] =cb:new(temp)
-  add_component(cb:new(temp), id)
+  add_component(controls.cb:new(temp), id)
   
   redraw = true
   
@@ -501,7 +505,7 @@ end
 function ui.init()
  font = love.graphics.getFont()
     main_canvas = love.graphics.newCanvas(love.graphics.getWidth(),love.graphics.getHeight())
-    spi.set_btn(b)
+    controls.spi.set_btn(controls.b)
     components.ClickEvent = function () end
 end
 
