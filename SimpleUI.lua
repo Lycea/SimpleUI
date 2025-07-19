@@ -14,6 +14,8 @@ print(BASE)
 -- local spi = require(BASE..'Spinner')
 
 
+___simple_ui_base_helpers = {}
+___simple_ui_base_class = require(BASE .. "base_class.classic")
 local controls = require(BASE.."components.components")
 
 
@@ -79,6 +81,12 @@ local function add_component(comp,id)
   components[id] = comp
   table.insert(component_ids,id)
 end
+
+local function increase_id()
+  g_id = g_id+1
+end
+
+
 
 
 function init()
@@ -407,7 +415,7 @@ function ui.AddButton(label,x,y,width,height,radius)
   temp.color      = settings().button
   temp.ClickEvent = components.ClickEvent
   
-  add_component(controls.b:new(temp), id)
+  add_component(controls.b(temp), id)
   
   redraw = true
   

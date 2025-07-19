@@ -85,8 +85,8 @@ function Spinner:new (o)
           end
     }
 
-     o.btn_left  = btn:new(btn_left_info)
-     o.btn_right = btn:new(btn_right_info)
+     o.btn_left  = btn(btn_left_info)
+     o.btn_right = btn(btn_right_info)
 
 
      setmetatable(o, self)
