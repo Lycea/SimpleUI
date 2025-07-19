@@ -80,6 +80,8 @@ end
 local function add_component(comp,id)
   components[id] = comp
   table.insert(component_ids,id)
+
+  redraw = true
 end
 
 local function increase_id()
@@ -230,12 +232,10 @@ function ui.AddSlider(value,x,y,width,height,min,max)
     temp.width = width or 50
     temp.height = height or 30
     temp.txt_pos = {}
-    
 
-    
     temp.state = "default"
     temp.visible = true
-    
+ 
     temp.sli_pos = {}
     temp.sli_pos.x =temp.x+temp.width/2 -10
     temp.sli_pos.y =temp.y+temp.height/2 -10
@@ -389,39 +389,29 @@ end
 function ui.AddButton(label,x,y,width,height,radius)
   local id = g_id
   local temp = {}
-  local w         = settings().button.font:getWidth(label)
-  local p = settings().button.font:getHeight()
-  
+
   temp.id  = id
   temp.txt = label or ""
-  temp.x   = x or 0
-  temp.y   = y or 0
 
-  width = w > width and w+20 or width
-  height = p> height and p*3 or height
-  temp.width = width or 50
-  temp.height = height or 30
-  temp.txt_pos = {}
-  
-  x =math.floor(x+( width - w)/2)
-  y = math.floor(y+( height -p)/2)
-  
-  temp.txt_pos.x = x--x + 10
-  temp.txt_pos.y = y--y + 7
-  
-  temp.state = "default"
-  temp.visible = true
-  
   temp.color      = settings().button
   temp.ClickEvent = components.ClickEvent
+
+
+  local tmp_b = controls.b(temp)
   
-  add_component(controls.b(temp), id)
+  tmp_b:set_pos(x or 0, y or 0)
+  tmp_b:set_size(width,height)
+
+  tmp_b:recalc_size()
+
+  add_component(tmp_b, id)
   
-  redraw = true
-  
-  g_id =g_id +1
+  increase_id()
+
   return id
 end
+
+
 
 function ui.AddToggleButton(label, x, y,w,h, value)
   local id        = g_id

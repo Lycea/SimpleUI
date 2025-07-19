@@ -12,11 +12,17 @@ local Button =  base_ctrl:extend()
 function Button:new (o)
 
   self.name = "Button"
+
   self.time = 0.0
   self.timeout =  0.1
+
   self.enabled =  true
   self.visible =  true
   self.__onClick = function() end
+
+  self.txt_pos = self.txt_pos or {}
+  self.state = "default"
+
 
   self:init_from_list(o)
 end
@@ -26,7 +32,27 @@ function Button:setCallback( callback, fn)
   self["__"..callback] = fn
 end
 
+function Button:recalc_size()
+  local w = self.color.font:getWidth(self.txt)
+  local p = self.color.font:getHeight()
 
+  self.width = w > self.width and w + 20 or self.width
+  self.height = p > self.height and p * 3 or self.height
+
+  self.width = self.width or 50
+  self.height = self.height or 30
+
+
+  local x = math.floor(self.x + (self.width - w) / 2)
+  local y = math.floor(self.y + (self.height - p) / 2)
+
+  self.txt_pos.x = x --x + 10
+  self.txt_pos.y = y --y + 7
+end
+
+function Button:calc_text_pos()
+  
+end
 
 function Button:draw()
   
