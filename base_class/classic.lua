@@ -7,7 +7,7 @@
 -- the terms of the MIT license. See LICENSE for details.
 --
 
-
+--- @class classic
 local Object = {}
 Object.__index = Object
 
@@ -73,5 +73,5 @@ function Object:__call(...)
   return obj
 end
 
-
+--- @return classic
 return Object

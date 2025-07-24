@@ -1,7 +1,11 @@
+---- base controll class
+---
+---
+--- !doctype module
+--- @class base_component : __simple_ui_base_class
 local base_component = ___simple_ui_base_class:extend()
 
 -- init helper
-
 function base_component:init_from_list(list)
   list = list or {}     -- create object if user does not provide one
 
@@ -45,5 +49,5 @@ end
 
 
 
-
+-- @return base_component
 return base_component

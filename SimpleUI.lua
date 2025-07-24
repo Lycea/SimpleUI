@@ -1,4 +1,6 @@
-local BASE = (...)..'.' 
+
+
+local BASE = (...)..'.'
 print(BASE)
 local i= BASE:find("SimpleUI.$")
 print (i)
@@ -15,14 +17,28 @@ print(BASE)
 
 
 ___simple_ui_base_helpers = {}
+
+
+
+--- @class __simple_ui_base_class : classic
 ___simple_ui_base_class = require(BASE .. "base_class.classic")
-local controls = require(BASE.."components.components")
 
 
+--- @alias ui.controls components
+--- @module "components.components"
+local controls = require(BASE .. "components.components")
 
+
+---- My simple ui module.
+---
+--- !doctype module
+--- @class SimpleUI
 local ui = {}
 
-local components ={}
+--- all controls that exist at the moment
+local components = {}
+
+--- @class list of all component ids in the ui
 local component_ids = {}
 
 local redraw = true
@@ -44,7 +60,7 @@ local use_pre_11_colors = false
 controls.cb.ui = ui
 controls.tb.ui = ui
 
-
+--- function which returns the color settings based on love2d version set
 local function settings()
 
   pre_11_colors = {
@@ -76,7 +92,7 @@ local function settings()
   return use_pre_11_colors and pre_11_colors or post_11_colors
 
 end
-
+--- private function to add a new component to the list
 local function add_component(comp,id)
   components[id] = comp
   table.insert(component_ids,id)
@@ -94,7 +110,8 @@ end
 function init()
   --spi.set_btn(b)
 end
-  
+
+--- draw the ui
 function ui.draw()
   if redraw then
     lg.setCanvas(main_canvas)
@@ -215,6 +232,7 @@ function ui.AddClickHandle(callback)
   --components.ClickEvent = callback
 end
 
+--- Update the ui
 function ui.update()
   check_components()
 end
@@ -262,6 +280,7 @@ function ui.AddSlider(value,x,y,width,height,min,max)
     return id
 end
 
+---
 function ui.AddSpinner(items,x,y,width,height,radius)
   local id = g_id
   local temp = {}
@@ -311,81 +330,85 @@ function ui.AddSpinner(items,x,y,width,height,radius)
   return id
 end
 
-function ui.AddNumericalSpinner(x,y,width,height,min,max)
-  local id = g_id
-  local temp = {}
-  local w = settings().button.font:getWidth("test")
-  local p = settings().button.font:getHeight()
-  
-  --iterate list and get largest string ...
-  local w = 0
+---
+function ui.AddNumericalSpinner(x, y, width, height, min, max)
+    local id = g_id
+    local temp = {}
+    local w = settings().button.font:getWidth("test")
+    local p = settings().button.font:getHeight()
 
-  w = settings().button.font:getWidth(tostring(max))
+    --iterate list and get largest string ...
+    local w = 0
+
+    w = settings().button.font:getWidth(tostring(max))
 
 
-  temp.items = items or {}
-  temp.id  = id
-  temp.txt = label or ""
+    temp.items      = items or {}
+    temp.id         = id
+    temp.txt        = label or ""
 
-  --position
-  temp.x   = x or 0
-  temp.y   = y or 0
+    --position
+    temp.x          = x or 0
+    temp.y          = y or 0
 
-  width = w
-  height = p
+    width           = w
+    height          = p
 
-  temp.width = width or 50
-  temp.height = height or 30
+    temp.width      = width or 50
+    temp.height     = height or 30
 
-  temp.txt_pos = {}
-  
-  x = math.floor(x+( width - w)/2)
-  y = math.floor(y+( height -p)/2)
-  
-  temp.txt_pos.x = x + 10
-  temp.txt_pos.y = y 
-  
-  temp.state = "default"
-  temp.visible = true
-  
-  temp.color      = settings().button
-  temp.ClickEvent = components.ClickEvent
-  temp.numbers = true
+    temp.txt_pos    = {}
 
-  temp.min = min
-  temp.max = max
+    x               = math.floor(x + (width - w) / 2)
+    y               = math.floor(y + (height - p) / 2)
 
-  --components[id] =spi:new(temp)
-  add_component(controls.spi:new(temp), id)
+    temp.txt_pos.x  = x + 10
+    temp.txt_pos.y  = y
 
-  redraw = true
-  
-  g_id =g_id +1
-  return id
+    temp.state      = "default"
+    temp.visible    = true
+
+    temp.color      = settings().button
+    temp.ClickEvent = components.ClickEvent
+    temp.numbers    = true
+
+    temp.min        = min
+    temp.max        = max
+
+    --components[id] =spi:new(temp)
+    add_component(controls.spi:new(temp), id)
+
+    redraw = true
+
+    g_id = g_id + 1
+    return id
 end
 
-function ui.AddLabel(label,x,y)
-  local id = g_id
-  local temp = {}
-  
-  temp.id  = id
-  temp.txt = label or ""
-  temp.x   = x or 0
-  temp.y   = y or 0
-  
-  temp.state = "default"
-  temp.visible = true
-  
-  temp.color   = settings().button
-  
-  add_component(controls.lb:new(temp), id)
-  redraw = true
-  
-  g_id =g_id +1
-  return id
-    
+--- Add a label
+function ui.AddLabel(label, x, y)
+    local id   = g_id
+    local temp = {}
+
+    temp.id    = id
+    temp.txt   = label or ""
+    temp.x     = x or 0
+    temp.y     = y or 0
+
+
+    temp.color = settings().button
+    local cmp  = controls.lb(temp)
+
+
+    add_component(cmp, id)
+    redraw = true
+
+    increase_id()
+    return id
 end
 
+
+--- Add a Button
+--- @param label string Name to display on the button
 function ui.AddButton(label,x,y,width,height,radius)
   local id = g_id
   local temp = {}
@@ -405,7 +428,7 @@ function ui.AddButton(label,x,y,width,height,radius)
   tmp_b:recalc_size()
 
   add_component(tmp_b, id)
-  
+ 
   increase_id()
 
   return id

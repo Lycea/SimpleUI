@@ -5,8 +5,17 @@ local i = BASE:find("Button.$")
 print(i)
 local BASE = BASE:sub(1, i - 1)
 print(BASE)
+
+--- @alias base_ctrl base_component
+
+--- @module "__base_component"
 local base_ctrl = require(BASE .. "__base_component")
 
+---- Button class
+---
+---
+--- !doctype module
+--- @class ButtonCtrl : base_component
 local Button =  base_ctrl:extend() 
 
 function Button:new (o)
@@ -110,4 +119,5 @@ function Button:update(clicked,x,y,focused)
    return focused, redraw
 end
 
+--- @return ButtonCtrl
 return Button
