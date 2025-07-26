@@ -420,6 +420,32 @@ function ui.AddButton(label,x,y,width,height,radius)
 end
 
 
+
+--- Add a Draggable object
+function ui.AddDragable( x, y, width, height)
+  local id        = g_id
+  local temp      = {}
+
+  temp.id         = id
+
+  temp.color      = settings().button
+  temp.ClickEvent = components.ClickEvent
+
+
+  local tmp_drag = controls.dr(temp)
+
+  tmp_drag:set_pos(x or 0, y or 0)
+  tmp_drag:set_size(width, height)
+
+  add_component(tmp_drag, id)
+
+  increase_id()
+
+  return id
+end
+
+
+
 function ui.AddToggleButton(label, x, y,w,h, value)
   local id        = g_id
   local temp      = {}

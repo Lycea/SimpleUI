@@ -21,6 +21,7 @@ function cb_callback(id, name, checked)
   ui.ObjSetValue(id,"checkbox ",checked)
 end
 
+draggable_obj = nil
 
 function button_examples()
   ------------------
@@ -111,6 +112,11 @@ function component_group_example()
   ui.AddGroup(toggle_group,"toggle_example",true)
 end
 
+function draggable_example()
+  draggable_obj = ui.GetObject(ui.AddDragable( 300, 200, 20,20))
+end
+
+
 
 function love.load()
   ui.init()
@@ -120,6 +126,7 @@ function love.load()
   slider_examples()
   spinner_examples()
   toggle_example()
+  draggable_example()
 
   component_group_example()
 end
@@ -129,6 +136,12 @@ function love.update(dt)
 end
 
 function love.draw()
+
+  love.graphics.print("move me" ,
+                       draggable_obj.x - 10,
+                       draggable_obj.y - draggable_obj.height    )
+
+
   ui.draw()
 end
 

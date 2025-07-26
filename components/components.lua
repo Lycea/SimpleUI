@@ -17,7 +17,8 @@ local components = {
   s   = require(BASE .. 'Slider'), --- @module "Slider"
  cb  = require(BASE .. 'Checkbox'),--- @module "Checkbox"
  tb  = require(BASE .. "ToggleButton"), --- @module "ToggleButton"
- spi = require(BASE .. 'Spinner') --- @module "Spinner"
+ spi = require(BASE .. 'Spinner'), --- @module "Spinner"
+ dr = require(BASE .. 'Draggable') --- @module "Draggable"
 }
 
 --import interfaces and extend classes
