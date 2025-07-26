@@ -245,38 +245,23 @@ function ui.AddSlider(value,x,y,width,height,min,max)
     
     temp.id  = id
     temp.txt =  ""
-    temp.x   = x or 0
-    temp.y   = y or 0
-    temp.width = width or 50
-    temp.height = height or 30
-    temp.txt_pos = {}
 
-    temp.state = "default"
-    temp.visible = true
- 
-    temp.sli_pos = {}
-    temp.sli_pos.x =temp.x+temp.width/2 -10
-    temp.sli_pos.y =temp.y+temp.height/2 -10
-    temp.sli_pos.h = 20
-    temp.sli_pos.w = 20
-    
-    --love.graphics.rectangle(mode,obj.x+20,y,obj.width - 40,6)
-    temp.txt_pos.x = (temp.x + 20) + temp.width -40 +10
-    temp.txt_pos.y = temp.sli_pos.y + 7
-    
-    temp.value  = value or 0
-    temp.min    = min   or 0
-    temp.max    = max   or 100
-    
-    temp.color = settings().button
+    temp.color      = settings().button
     temp.ClickEvent = components.ClickEvent
 
-    add_component(controls.s:new(temp), id)
-    --components[id] =
-    --table.insert( component_ids, id)
+    local tmp_slider = controls.s(temp)--- @type Slider
+
+    tmp_slider:set_size(width , height )
+    tmp_slider:set_pos(x, y)
+
+    tmp_slider:set_bounds(min or 0, max or 100)
+    tmp_slider:set_value(value or 0)
+
+    add_component(tmp_slider, id)
     
     redraw = true
-    g_id=g_id +1
+
+    increase_id()
     return id
 end
 
@@ -435,7 +420,6 @@ function ui.AddButton(label,x,y,width,height,radius)
 end
 
 
-
 function ui.AddToggleButton(label, x, y,w,h, value)
   local id        = g_id
   local temp      = {}
@@ -498,12 +482,20 @@ function ui.SetColor(component,color_type,color)
   redraw = true
 end
 
-function ui.SetVisibiliti(id,visible)
-  components[id].visible =    visible  
-  if components[id].SetVisibility then  components[id]:SetVisibility(visible) end
+
+--- @deprecated Only available right now till I switch it to the other correctly written one
+function ui.SetVisibiliti(id, visible)
+  ui.SetVisibility(id, visible)
+end
+
+---- function to set the visibility of a control
+function ui.SetVisibility(id, visible)
+  components[id].visible = visible
+  if components[id].SetVisibility then components[id]:SetVisibility(visible) end
 
   redraw = true
 end
+
 
 function ui.SetEnabled(id, enabled)
   components[id].enabled = enabled

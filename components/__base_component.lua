@@ -30,6 +30,35 @@ end
 function base_component:recalc_size()
 end
 
+--- @class rectangle
+--- @field x integer
+--- @field y integer
+--- @field w integer
+--- @field h integer
+
+---- Helper to convert values into a dictionary
+--- @return rectangle
+function base_component:to_rect(x,y,w,h)
+  return {x=x,y=y,h=h,w=w}
+end
+
+function base_component:rectangle()
+  --- @type rectangle
+  self.rect_area = {x= self.x,y=self.y,w=self.width,h=self.height}
+end
+
+---------------------------------
+
+--- area checker
+--- @param rectangle rectangle
+--- @return boolean if the given point is in the rectangle area
+function base_component:in_area(rectangle, point)
+
+  return point.x >= rectangle.x and point.x <= rectangle.x + rectangle.w and
+         point.y >= rectangle.y and point.y <= rectangle.y + rectangle.h
+
+end
+
 ---------------------
 -- draw helpers
 function base_component:draw_bg(color,pos,size)

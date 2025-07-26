@@ -31,7 +31,6 @@ local Label = base_ctrl:extend()
 end
 
 
-
 function Label:draw()
 
   if self.visible then
@@ -43,9 +42,7 @@ function Label:draw()
 end
 
 
-
-
-function Label.update(obj,clicked,x,y,focused)
+function Label:update(clicked,x,y,focused)
    return focused, false
 end
 
