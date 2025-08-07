@@ -98,7 +98,7 @@ function Checkbox.update(obj,clicked,x,y,focused)
 
             --check if it creates a bigger issue if not checked if active
             if obj.toggle_group ~= "-" then
-              Checkbox.ui.update_toggles(obj.id,obj.toggle_group)
+              obj.ui:update_toggles(obj.id,obj.toggle_group)
             end
 
             obj.time = 0

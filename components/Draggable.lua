@@ -7,8 +7,7 @@ local BASE = BASE:sub(1, i - 1)
 print(BASE)
 
 --- @module "__base_component"
-local base_ctrl = require(BASE .. "__base_component")
-
+local base_ctrl = require(BASE .. "base_classes.__base_component")
 
 --- !doctype module
 --- @class Draggable : base_component

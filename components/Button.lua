@@ -9,7 +9,7 @@ print(BASE)
 --- @alias base_ctrl base_component
 
 --- @module "__base_component"
-local base_ctrl = require(BASE .. "__base_component")
+local base_ctrl = require(BASE .. "base_classes.__base_component")
 
 ---- Button class
 ---
@@ -97,8 +97,9 @@ function Button:update(clicked,x,y,focused)
    
    local time = love.timer.getDelta()
 
-   if (self.x < x) and (self.y< y) and (self.x+self.width > x) and self.y+self.height > y and self.enabled then
-      --it is in rectangle so hover or click!!!
+   self:rectangle()
+   if self:in_area(self.rect_area,{x=x,y=y}) and self.enabled then
+     --it is in rectangle so hover or click!!!
       if focused == 0 or focused == self.id then
         focused = self.id
         self.time = self.time +time
@@ -115,7 +116,23 @@ function Button:update(clicked,x,y,focused)
        self.state = "default" 
      
    end
-   redraw = (old== self.state) and redraw or true 
+
+   --print("redraw_calc")
+   --print("   old",old)
+   --print("   act_state",self.state)
+   --print("   redraw",redraw)
+
+   if old ~= self.state then
+     redraw = true
+   else
+     redraw = redraw
+   end
+
+   if self.state == "clicked" then
+     redraw = true
+   end
+   -- redraw = (old == self.state) and redraw and true
+   --print("  need redraw:",redraw)
    return focused, redraw
 end
 
