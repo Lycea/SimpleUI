@@ -187,6 +187,7 @@ end
 
 --- Add a Draggable object
 function comp_adder:AddDragable( x, y, width, height)
+  print("adding dragable ~")
   local id        = self:id()
   local temp      = {}
 

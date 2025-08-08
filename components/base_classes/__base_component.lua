@@ -20,11 +20,15 @@ end
 function base_component:set_pos(x,y)
   self.x = x
   self.y = y
+
+  self:recalc_size()
 end
 
 function base_component:set_size(width,height)
   self.width = width
   self.height = height
+
+  self:recalc_size()
 end
 
 function base_component:recalc_size()

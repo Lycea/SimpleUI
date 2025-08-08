@@ -118,7 +118,11 @@ function draggable_example()
   draggable_obj = ui:GetObject(ui:AddDragable( 300, 200, 20,20))
 end
 
-
+function window_example()
+  local win = ui:GetObject(ui:add_window(50, 300 , 200,200))
+  win:AddButton("test",0,0, 50,30)
+  win:AddCheckbox("test",0, 50, true)
+end
 
 function love.load()
   ui:init()
@@ -131,6 +135,8 @@ function love.load()
   draggable_example()
 
   component_group_example()
+
+  window_example()
 end
 
 function love.update(dt)

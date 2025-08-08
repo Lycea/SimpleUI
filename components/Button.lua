@@ -25,6 +25,9 @@ function Button:new (o)
   self.time = 0.0
   self.timeout =  0.1
 
+  self.width = 0
+  self.height = 0
+
   self.enabled =  true
   self.visible =  true
   self.__onClick = function() end
@@ -59,9 +62,6 @@ function Button:recalc_size()
   self.txt_pos.y = y --y + 7
 end
 
-function Button:calc_text_pos()
-  
-end
 
 function Button:draw()
   

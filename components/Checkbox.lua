@@ -28,6 +28,15 @@ end
       return o
 end
 
+function Checkbox.set_pos(o,x,y)
+  o.x = x
+  o.y = y
+
+  o.box.x = x -2
+  o.box.y = y -2
+
+  o.txt_pos = o.box.x +25
+end
 
 local function check(o)
     love.graphics.setColor(o.color["font_color"])

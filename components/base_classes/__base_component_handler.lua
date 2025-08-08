@@ -15,6 +15,7 @@ function base_component_handle:new()
 print("subinit!")
     self.components = {}
     self.component_ids = {}
+    self.font = love.graphics.getFont()
 end
 
 function base_component_handle:redraw()
@@ -33,6 +34,33 @@ function base_component_handle:increase_id()
   base_component_handle.g_id = self:id() + 1
 end
 
+function base_component_handle:focus()
+  return base_component_handle.focused
+end
+
+function base_component_handle:set_focus(id)
+  base_component_handle.focused = id
+end
+
+
+function base_component_handle:update_component_sizes()
+
+  local pos_div_x = self.x - self.prev_x
+  local pos_div_y = self.y - self.prev_y
+
+
+  for _ , component in pairs(self.component_ids) do
+    local tmp_cmp = self.components[component]
+    if self.components[component].set_pos == nil then
+      print("no reposition for component of type: "..tmp_cmp.name)
+      tmp_cmp.x = tmp_cmp.x + pos_div_x
+      tmp_cmp.y = tmp_cmp.y + pos_div_y
+    else
+      self.components[component]:set_pos( tmp_cmp.x + pos_div_x, tmp_cmp.y + pos_div_y)
+    end
+  end
+
+end
 
 function base_component_handle:settings()
 

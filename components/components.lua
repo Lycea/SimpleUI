@@ -18,7 +18,8 @@ local components = {
  cb  = require(BASE .. 'Checkbox'),--- @module "Checkbox"
  tb  = require(BASE .. "ToggleButton"), --- @module "ToggleButton"
  spi = require(BASE .. 'Spinner'), --- @module "Spinner"
- dr = require(BASE .. 'Draggable') --- @module "Draggable"
+ dr = require(BASE .. 'Draggable'), --- @module "Draggable"
+ wi = require(BASE .. 'Window') --- @module "Window"
 }
 
 --import interfaces and extend classes

@@ -37,7 +37,22 @@ ui:implement(  require(BASE .. "components.interfaces.groups"))
 
 
 
+function ui:add_window(x, y, w, h)
+  local id = self:id()
 
+  local tmp = {}
+  local window = self.controls.wi(tmp)
+
+  window:set_size(w,h)
+  window:set_pos(x,y)
+
+  self:add_component(window,id)
+
+  self:increase_id()
+  self:redraw()
+
+  return id
+end
 
 
 
