@@ -20,7 +20,8 @@ local components = {
  spi = require(BASE .. 'Spinner'), --- @module "Spinner"
  dr = require(BASE .. 'Draggable'), --- @module "Draggable"
  wi = require(BASE .. 'Window'), --- @module "Window"
- layouts = require(BASE .. 'layouts.Layouts')
+  space      = require(BASE .. 'Spacer'),  --- @module "Spacer"
+  layouts = require(BASE .. 'layouts.Layouts')
 }
 
 --import interfaces and extend classes

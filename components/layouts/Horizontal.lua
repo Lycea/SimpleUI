@@ -53,10 +53,10 @@ function HorizontalLayout:add_component(cmp_, id)
   local offset = 0
 
   for _,id in pairs(self.component_ids) do
-    local p_x = self.x + width_per_item * offset
-    local p_y = self.y 
-    local p_h = self.height
-    local p_w = width_per_item
+    local p_x = self.x + width_per_item * offset + self.margin
+    local p_y = self.y + self.margin
+    local p_h = self.height -self.margin*2
+    local p_w = width_per_item -self.margin*2
 
     self.components[id]:set_pos(p_x ,p_y)
     self.components[id]:set_size(p_w,p_h)
@@ -64,12 +64,11 @@ function HorizontalLayout:add_component(cmp_, id)
     offset = offset +1
   end
 
-  local p_x = self.x + width_per_item * offset
-  local p_y = self.y
+  local p_x = self.x + width_per_item * offset + self.margin
+  local p_y = self.y + self.margin
 
-  local p_h = self.height
-  local p_w = width_per_item
-
+  local p_h = self.height - self.margin * 2
+  local p_w = width_per_item - self.margin * 2
 
   cmp_:set_pos(p_x, p_y)
   cmp_:set_size(p_w, p_h)
@@ -104,20 +103,18 @@ function HorizontalLayout:new(o)
     self.prev_x = self.x
     self.prev_y = self.y
 
-    self.margin = 0
+    self.margin = 4
 
     self.components = {}
     self.color = self:settings().button
     self.options = {
-      enable_titlebar = true,
-      enable_resize = nil,
       has_background = false,
-      base_window_coordinates = false
+      base_window_coordinates = false,
+      show_layout = false
     }
 
 --    self.__drag_obj = self:GetObject(self:AddDragable(self.x, self.y - 10, self.width, 10))
 
-    self.layout = nil
     self:init_from_list()
 
     self.has_backround = false
@@ -152,7 +149,7 @@ end
 
 function HorizontalLayout:draw()
 
-  if self.visible then
+  if self.visible and self.options.show_layout then
         --draw the "background"
         love.graphics.setColor(self.color[self.state.."_color"])
         love.graphics.rectangle("fill",self.x,self.y,self.width,self.height)
