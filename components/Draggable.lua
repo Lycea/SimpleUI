@@ -34,6 +34,7 @@ function Draggable:new(o)
 
     self.state = "default"
     self.visible = true
+    self.enabled = true
     -- initing some defaults
 
     self.height = 50
@@ -79,10 +80,19 @@ end
 function Draggable:update(clicked,x,y,focused)
   local obj = self
   local redraw = false
-  local old =obj.state 
+  local old =obj.state
+
+  if not self.visible  or not self.enabled then
+    if focused == obj.id then
+      focused = 0
+      obj.state = "default"
+    end
+    return focused, redraw
+  end
+
   self:rectangle()
 
-   if obj:in_area(self.rect_area,{x=x,y=y} ) then
+   if obj:in_area(self.rect_area,{x=x,y=y} )  then
     --it is in rectangle so hover or click!!!
       if focused == 0 or focused == obj.id then
         focused = obj.id

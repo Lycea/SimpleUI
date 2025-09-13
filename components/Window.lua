@@ -13,10 +13,11 @@ local base_component = require(BASE .. "base_classes.__base_component")
 
 
 --- !doctype module
---- @class Window : base_component
+--- @class Window : BaseComponentHandler
 local Window = base_ctrl:extend()
 Window:implement(base_component)
 Window:implement(require(BASE .. "interfaces.component_creator"))
+Window:implement(require(BASE .. "interfaces.layout_creator"))
 local s = Window
 
 --------------------------------
@@ -24,6 +25,11 @@ local s = Window
 
 
 function Window:add_component(cmp_, id)
+
+  if self.layout then
+    self.layout:add_component(cmp_,id)
+    return
+  end
 
   --if we don't use the base window coordinates we need
   --to recalculate the position of the control to inside the window
@@ -50,6 +56,7 @@ end
 
 
 function Window:new(o)
+    print("------------")
     self.super.new(self)
 
     o = o or {} -- create object if user does not provide one
@@ -68,7 +75,7 @@ function Window:new(o)
     self.x = 0
     self.y = 0
 
-    self.margin = 0
+    self.margin = 10
 
     self.components = {}
     self.color = self:settings().button
@@ -80,13 +87,37 @@ function Window:new(o)
     }
 
     self.__drag_obj = self:GetObject(self:AddDragable(self.x, self.y - 10, self.width, 10))
-    
+
+    if not self.options.enable_titlebar then
+      self.__drag_obj.visible = false
+    end
+
+    self.layout = nil
     self:init_from_list()
 
     self.has_backround = false
     
 end
 
+
+function Window:set_layout(layout)
+  if self.controls.layouts[layout] == nil then
+    print("layout "..layout.."does not exist, choose from :\n   horizontal\n  vertical")
+    return
+  end
+
+  print("win info:",self.width,self.height,self.x,self.y)
+  local lay = self.controls.layouts[layout]()
+  lay:set_size(self.width - self.margin*2 ,self.height - self.margin*2)
+  lay:set_pos(self.x + self.margin, self.y+self.margin)
+  
+
+  self.layout = lay
+end
+
+function Window:reset_layout()
+  self.layout = nil
+end
 
 function Window:setCallback( callback, fn)
   self["__"..callback] = fn
@@ -97,6 +128,11 @@ function Window:set_size(width, height)
     self.height = height
 
     self.__drag_obj:set_size(width, 10)
+
+    if self.layout then
+      self.layout:set_size(width - self.margin*2,
+                           height- self.margin*2)
+    end
 end
 
 function Window:set_pos(x, y)
@@ -104,36 +140,49 @@ function Window:set_pos(x, y)
   self.y = y
 
   self.__drag_obj:set_pos(x,y-10)
+
+  if self.layout then
+    self.layout:set_pos(self.x + self.margin,
+                        self.y + self.margin)
+  end
 end
 
 function Window:draw()
 
   if self.visible then
-        --draw the "background"
-        love.graphics.setColor(self.color[self.state.."_color"])
-        love.graphics.rectangle("fill",self.x,self.y,self.width,self.height)
-        --draw the "border"
-        love.graphics.setColor(self.color["border_color"])
-        love.graphics.rectangle("line",self.x,self.y,self.width,self.height)
-  end
 
+    if self.options.has_background then
+      --draw the "background"
+      love.graphics.setColor(self.color[self.state .. "_color"])
+      love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
+    end
 
-  if self:get_redraw() then
-    for _, i in pairs(self.component_ids) do
-      if self.components[i] then
-        self.components[i]:draw()
+    --draw the "border"
+    love.graphics.setColor(self.color["border_color"])
+    love.graphics.rectangle("line",self.x,self.y,self.width,self.height)
+
+    if self:get_redraw() then
+      for _, i in pairs(self.component_ids) do
+        if self.components[i] then
+          self.components[i]:draw()
+        end
       end
     end
+
+    if self.layout then
+      self.layout:draw()
+    end
+
   end
 
 end
 
 
-
 function Window:update(clicked,x,y,focused)
   local obj = self
   local redraw = false
-  local old =obj.state 
+  local old =obj.state
+
   self:rectangle()
 
    -- if obj:in_area(self.rect_area,{x=x,y=y} ) then
@@ -157,9 +206,28 @@ function Window:update(clicked,x,y,focused)
 
   self:update_component_sizes()
 
+  if self.layout then
+
+    diff_x = self.x - self.prev_x
+    diff_y = self.y - self.prev_y
+    self.layout:set_pos(self.layout.x + diff_x, self.layout.y + diff_y)
+
+    self.layout:update(clicked,x,y,focused)
+  end
+
   self.__drag_obj:set_pos(self.x,self.y -10)
   
   return self:focus()
+end
+
+
+function Window:GetObject(id)
+  if self.layout then
+    return self.layout:GetObject(id)
+  else
+    return self.super.GetObject(self,id)
+  end
+  
 end
 
 

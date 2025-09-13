@@ -15,7 +15,16 @@ function base_component_handle:new()
 print("subinit!")
     self.components = {}
     self.component_ids = {}
+    self.num_components = 0
+
+    self.margin = 0
+
     self.font = love.graphics.getFont()
+end
+
+function base_component_handle:set_margin(num)
+  self.margin = num
+  self:redraw()
 end
 
 function base_component_handle:redraw()
@@ -59,7 +68,7 @@ function base_component_handle:update_component_sizes()
       self.components[component]:set_pos( tmp_cmp.x + pos_div_x, tmp_cmp.y + pos_div_y)
     end
   end
-
+  
 end
 
 function base_component_handle:settings()
@@ -99,6 +108,7 @@ function base_component_handle:add_component(comp, id)
   print("adding stuff",comp,id)
   self.components[id] = comp
   table.insert(self.component_ids, id)
+  self.num_components = self.num_components+1
 
   self:redraw()
 end
@@ -134,8 +144,10 @@ function base_component_handle:check_components()
   local x, y = love.mouse.getX(), love.mouse.getY()
   local clicked = love.mouse.isDown(1)
   local draw
+  local num_ids = 0
 
   for _, i in pairs(self.component_ids) do
+    num_ids=num_ids+1
     -- TODO do better iterating than all of the items
     --print("DEBUG: id checks ",i)
     if self.components[i] then
@@ -144,6 +156,7 @@ function base_component_handle:check_components()
       if self:get_redraw() == true then  else base_component_handle._redraw = draw end
     end
   end
+  print("num of components: "..num_ids)
 end
 
 
@@ -221,6 +234,7 @@ function base_component_handle:RemoveComponent(id)
   end
 
   self.components[id] = nil
+  self.num_components = self.num_components -1
 end
 
 function base_component_handle:GetObject(id)

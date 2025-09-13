@@ -124,6 +124,19 @@ function window_example()
   win:AddCheckbox("test",0, 50, true)
 end
 
+
+function window_layer_example()
+  local win = ui:GetObject(ui:add_window(120, 300, 200, 200))
+  win:set_layout("vertical")
+  win:AddButton("test", 0, 0, 50, 30)
+  win:AddButton("test", 0, 0, 50, 30)
+  win:AddButton("test", 0, 0, 50, 30)
+  hl = win:GetObject(win:AddHLayout())
+  hl:AddButton("test_h",0,0,0,0)
+  hl:AddButton("test_h", 0, 0, 0, 0)
+  hl:AddButton("test_h", 0, 0, 0, 0)
+end
+
 function love.load()
   ui:init()
 
@@ -137,6 +150,7 @@ function love.load()
   component_group_example()
 
   window_example()
+  window_layer_example()
 end
 
 function love.update(dt)

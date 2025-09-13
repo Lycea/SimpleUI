@@ -51,6 +51,13 @@ function base_component:rectangle()
   self.rect_area = {x= self.x,y=self.y,w=self.width,h=self.height}
 end
 
+function base_component:set_enabled(value)
+  self.enabled = value
+end
+
+function base_component:set_visible(value)
+  self.visible = value
+end
 ---------------------------------
 
 --- area checker
