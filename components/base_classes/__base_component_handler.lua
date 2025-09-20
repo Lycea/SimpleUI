@@ -12,7 +12,7 @@ base_component_handle._redraw = true
 base_component_handle.main_canvas = nil
 
 function base_component_handle:new()
-print("subinit!")
+  print("subinit!")
     self.components = {}
     self.component_ids = {}
     self.num_components = 0
@@ -77,7 +77,7 @@ function base_component_handle:settings()
     --      border col             background       label/font                 hover   clicked
     button = {
       border_color  = { 255, 255, 255, 255 },
-      default_color = { 0, 0, 0, 0, 255 },
+      default_color = { 0, 0, 0, 255 },
       font_color    = { 255, 255, 255, 255 },
       hover_color   = { 50, 50, 50, 250 },
       clicked_color = { 0, 50, 0, 255 },
@@ -90,7 +90,7 @@ function base_component_handle:settings()
     --      border col             background       label/font                 hover   clicked
     button = {
       border_color  = { 255 / 255, 255 / 255, 255 / 255, 255 / 255 },
-      default_color = { 0, 0, 0, 0, 255 / 255 },
+      default_color = { 0, 0, 0, 255 / 255 },
       font_color    = { 255 / 255, 255 / 255, 255 / 255, 255 / 255 },
       hover_color   = { 50 / 255, 50 / 255, 50 / 255, 250 / 255 },
       clicked_color = { 0, 50 / 255, 0, 255 / 255 },
@@ -156,7 +156,6 @@ function base_component_handle:check_components()
       if self:get_redraw() == true then  else base_component_handle._redraw = draw end
     end
   end
-  print("num of components: "..num_ids)
 end
 
 
@@ -206,6 +205,7 @@ end
 
 
 function base_component_handle:init()
+  print("init ?")
  self.font = love.graphics.getFont()
     base_component_handle.main_canvas = love.graphics.newCanvas(love.graphics.getWidth(),love.graphics.getHeight())
     self.controls.spi.set_btn(self.controls.b)
@@ -237,7 +237,8 @@ function base_component_handle:RemoveComponent(id)
   self.num_components = self.num_components -1
 end
 
-function base_component_handle:GetObject(id)
+---@return base_ctrl | BaseComponentHandler  |-1
+function base_component_handle:GetObject(id) 
   if self.components[id] == nil then
     print("Object with id " .. id .. "was not found in this ui")
 
@@ -258,8 +259,8 @@ function base_component_handle:ObjSetValue(id,variable,value)
 end
 
 
-function base_component_handle:set_pre_11_colors()
-  base_component_handle.use_pre_11_colors = true
+function base_component_handle:set_pre_11_colors(enabled)
+  base_component_handle.use_pre_11_colors = enabled or true
 end
 
 

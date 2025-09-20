@@ -17,6 +17,7 @@ local base_component = require(BASE .. "base_classes.__base_component")
 local VerticalLayout = base_ctrl:extend()
 VerticalLayout:implement(base_component)
 VerticalLayout:implement(require(BASE .. "interfaces.component_creator"))
+VerticalLayout:implement(require(BASE .. "interfaces.groups"))
 local s = VerticalLayout
 
 --------------------------------
@@ -61,7 +62,7 @@ function VerticalLayout:add_component(cmp_, id)
 
     self.components[id]:set_pos(p_x ,p_y)
     self.components[id]:set_size(p_w,p_h)
-
+    self.components[id]:recalc_size()
     offset = offset +1
   end
 
@@ -74,7 +75,7 @@ function VerticalLayout:add_component(cmp_, id)
 
   cmp_:set_pos(p_x, p_y)
   cmp_:set_size(p_w, p_h)
-
+  cmp_:recalc_size()
   self.super.add_component(self,cmp_,id)
 end
 
@@ -176,8 +177,6 @@ function VerticalLayout:update(clicked,x,y,focused)
   local redraw = false
   local old =obj.state 
   self:rectangle()
-  print("---")
-  print("layout")
    -- if obj:in_area(self.rect_area,{x=x,y=y} ) then
    --  --it is in rectangle so hover or click!!!
    --    if focused == 0 or focused == obj.id then
@@ -195,7 +194,6 @@ function VerticalLayout:update(clicked,x,y,focused)
   self.prev_x = self.x
   self.prev_y = self.y
 
-  print("layout end\n-----")
   return self:focus()
 end
 

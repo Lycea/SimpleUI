@@ -13,11 +13,13 @@ local base_component = require(BASE .. "base_classes.__base_component")
 
 
 --- !doctype module
---- @class Window : BaseComponentHandler
+---@class Window: BaseComponentHandler
 local Window = base_ctrl:extend()
 Window:implement(base_component)
 Window:implement(require(BASE .. "interfaces.component_creator"))
 Window:implement(require(BASE .. "interfaces.layout_creator"))
+Window:implement(require(BASE .. "interfaces.groups"))
+
 local s = Window
 
 --------------------------------
@@ -177,6 +179,10 @@ function Window:draw()
 
 end
 
+function Window:enable_titlebar(enable)
+    self.__drag_obj.visible = enable
+  self:redraw()
+end
 
 function Window:update(clicked,x,y,focused)
   local obj = self

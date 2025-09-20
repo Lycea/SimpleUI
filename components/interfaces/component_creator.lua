@@ -1,3 +1,9 @@
+--- !doctype module
+
+---@module "../base_classes/__base_component.lua"
+
+---@class ComponentCreator: BaseComponentHandler
+---@field controls components
 local comp_adder = ___simple_ui_base_class:extend()
 
 ------------------------------------------
@@ -218,22 +224,17 @@ function comp_adder:AddToggleButton(label, x, y,w,h, value)
   temp.id         = id
   temp.txt        = label or ""
 
-  temp.x          = x or 0
-  temp.y          = y or 0
-  temp.w          = w or 0
-  temp.h          = h or 0
-
-  temp.state      = "default"
-  temp.visible    = true
-  temp.checked    = value or false
-
   temp.color      = self:settings().button
   temp.ClickEvent = self.components.ClickEvent
 
   --components[id] =cb:new(temp)
 
-  local toggle_btn = self.controls.tb:new(temp)
+  local toggle_btn = self.controls.tb(temp)
   toggle_btn.ui = self
+
+  toggle_btn:set_pos(x or 0, y or 0)
+  toggle_btn:set_size(w, h)
+  toggle_btn:recalc_size()
 
   self:add_component(toggle_btn, id)
 

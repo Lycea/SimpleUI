@@ -9,9 +9,7 @@ function layer_adder:AddVlayout(width, height, x, y)
   temp.color       = self:settings().button
   temp.ClickEvent  = self.components.ClickEvent
 
-  local tmp_layout = self.layouts.vertical(temp)   --- @type Slider
-  self:set_pos(x,y)
-  self:set_size(width,height)
+  local tmp_layout = self.controls.layouts.vertical(temp)   --- @type Slider
 
   self:add_component(tmp_layout, id)
 

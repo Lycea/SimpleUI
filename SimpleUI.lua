@@ -28,7 +28,6 @@ base_handler.controls = controls
 
 ---- My simple ui module.
 ---
---- !doctype module
 --- @class SimpleUI_ : BaseComponentHandler 
 local ui = base_handler:extend()
 ui:implement(require(BASE .. "components.interfaces.component_creator"))
