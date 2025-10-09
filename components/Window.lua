@@ -125,6 +125,18 @@ function Window:setCallback( callback, fn)
   self["__"..callback] = fn
 end
 
+function Window:SetSpecialCallback(id, fn, event_to_set)
+  print("setting cb ....")
+    if self.layout then
+        self.layout:SetSpecialCallback(id, fn, event_to_set)
+        return
+    end
+
+    self.super.SetSpecialCallback(self,id,fn,event_to_set)
+
+end
+
+
 function Window:set_size(width, height)
     self.width = width
     self.height = height

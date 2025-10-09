@@ -59,6 +59,7 @@ function HorizontalLayout:add_component(cmp_, id)
     local p_h = self.height -self.margin*2
     local p_w = width_per_item -self.margin*2
 
+    self.components[id]:max_size(p_w,p_h)
     self.components[id]:set_pos(p_x ,p_y)
     self.components[id]:set_size(p_w,p_h)
     self.components[id]:recalc_size()
@@ -72,6 +73,7 @@ function HorizontalLayout:add_component(cmp_, id)
   local p_h = self.height - self.margin * 2
   local p_w = width_per_item - self.margin * 2
 
+  cmp_:max_size(p_w,p_h)
   cmp_:set_pos(p_x, p_y)
   cmp_:set_size(p_w, p_h)
   cmp_:recalc_size()

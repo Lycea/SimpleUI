@@ -24,15 +24,21 @@ function base_component:set_pos(x,y)
   self:recalc_size()
 end
 
-function base_component:set_size(width,height)
-  self.width = width
-  self.height = height
+function base_component:set_size(width, height)
+  self.width = math.min(width,self.m_width or 9999)
+  self.height = math.min(height,self.m_height or 9999)
 
   self:recalc_size()
 end
 
 function base_component:recalc_size()
 end
+
+function base_component:max_size(w, h)
+  self.m_width = w
+  self.m_height = h
+end
+
 
 --- @class rectangle
 --- @field x integer

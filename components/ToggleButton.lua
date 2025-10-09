@@ -55,8 +55,8 @@ function ToggleButton:recalc_size()
   self.width = w > self.width and w + 20 or self.width
   self.height = p > self.height and p * 3 or self.height
 
-  self.width = self.width or 50
-  self.height = self.height or 30
+  self.width = math.min(self.width or 50, self.m_width or 9999)
+  self.height = math.min(self.height or 30,self.m_height or 9999)
 
 
   local x = math.floor(self.x + (self.width - w) / 2)
