@@ -69,6 +69,7 @@ function Window:new(o)
 
     self.state = "default"
     self.visible = true
+    self.enabled = true
     -- initing some defaults
 
     self.height = 50
@@ -97,6 +98,7 @@ function Window:new(o)
     self.layout = nil
     self:init_from_list()
 
+    print("win width:",self.width)
     self.has_backround = false
     
 end
@@ -215,26 +217,29 @@ function Window:update(clicked,x,y,focused)
    -- end
    -- redraw = (old== obj.state) and redraw or true 
 
-  self:check_components()
+  if self.visible == true and self.enabled == true then
 
-  self.prev_x = self.x
-  self.prev_y = self.y
+    self:check_components()
+    
+    self.prev_x = self.x
+    self.prev_y = self.y
+    
+    self:set_pos(self.__drag_obj.x,self.__drag_obj.y+10)
+    
+    self:update_component_sizes()
+    
+    if self.layout then
 
-  self:set_pos(self.__drag_obj.x,self.__drag_obj.y+10)
+      diff_x = self.x - self.prev_x
+      diff_y = self.y - self.prev_y
+      self.layout:set_pos(self.layout.x + diff_x, self.layout.y + diff_y)
 
-  self:update_component_sizes()
-
-  if self.layout then
-
-    diff_x = self.x - self.prev_x
-    diff_y = self.y - self.prev_y
-    self.layout:set_pos(self.layout.x + diff_x, self.layout.y + diff_y)
-
-    self.layout:update(clicked,x,y,focused)
-  end
-
-  self.__drag_obj:set_pos(self.x,self.y -10)
+      self.layout:update(clicked,x,y,focused)
+    end
   
+    self.__drag_obj:set_pos(self.x,self.y -10)
+
+  end
   return self:focus()
 end
 

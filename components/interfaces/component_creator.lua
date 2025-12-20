@@ -216,6 +216,41 @@ function comp_adder:AddDragable( x, y, width, height)
 end
 
 
+function comp_adder:AddWindow(x, y, w, h)
+  local id = self:id()
+
+  local tmp = {}
+  local window = self.controls.wi(tmp)
+
+  window:set_size(w, h)
+  window:set_pos(x, y)
+
+  self:add_component(window, id)
+
+  self:increase_id()
+  self:redraw()
+
+  return id
+end
+
+function comp_adder:AddContainer(x, y, w, h)
+  local id = self:id()
+
+  local tmp = {}
+  local window = self.controls.wi(tmp)
+
+  window:set_size(w, h)
+  window:set_pos(x, y)
+
+  window:enable_titlebar(false)
+
+  self:add_component(window, id)
+
+  self:increase_id()
+  self:redraw()
+
+  return id
+end
 
 function comp_adder:AddToggleButton(label, x, y,w,h, value)
   local id        = self:id()

@@ -58,4 +58,5 @@ end
 -- ui.controls.cb.ui = ui
 -- ui.controls.tb.ui = ui
 
+--- @return SimpleUI_
 return ui

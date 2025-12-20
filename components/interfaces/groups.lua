@@ -79,7 +79,8 @@ end
 
 
 function group_interface:AddToOptionGroup(id, name)
-  table.insert(self.toggle_groups[name].ids, id)
+    table.insert(self.toggle_groups[name].ids, id)
+  self:set_toggle_group(id, name)
 end
 
 return group_interface
